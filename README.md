@@ -1,1 +1,2 @@
-# AD_interface
+# AD interface
+GUI for simplified operations on Active Directory
