@@ -28,35 +28,60 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.launchScriptButton = new System.Windows.Forms.Button();
+            this.scriptTextBox = new System.Windows.Forms.TextBox();
+            this.statusLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // button1
+            // launchScriptButton
             // 
-            this.button1.Location = new System.Drawing.Point(339, 285);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Execute script";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.launchScriptButton.Location = new System.Drawing.Point(329, 285);
+            this.launchScriptButton.Name = "launchScriptButton";
+            this.launchScriptButton.Size = new System.Drawing.Size(100, 23);
+            this.launchScriptButton.TabIndex = 0;
+            this.launchScriptButton.Text = "Execute script";
+            this.launchScriptButton.UseVisualStyleBackColor = true;
+            this.launchScriptButton.Click += new System.EventHandler(this.Button1_Click);
+            // 
+            // scriptTextBox
+            // 
+            this.scriptTextBox.Location = new System.Drawing.Point(272, 169);
+            this.scriptTextBox.Name = "scriptTextBox";
+            this.scriptTextBox.Size = new System.Drawing.Size(215, 20);
+            this.scriptTextBox.TabIndex = 1;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.BackColor = System.Drawing.Color.Salmon;
+            this.statusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.Location = new System.Drawing.Point(283, 80);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(190, 63);
+            this.statusLabel.TabIndex = 2;
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.statusLabel.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.statusLabel);
+            this.Controls.Add(this.scriptTextBox);
+            this.Controls.Add(this.launchScriptButton);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button launchScriptButton;
+        private System.Windows.Forms.TextBox scriptTextBox;
+        private System.Windows.Forms.Label statusLabel;
     }
 }
 
