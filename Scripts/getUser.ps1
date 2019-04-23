@@ -1,0 +1,1 @@
+Get-ADUser -Filter "{FilterSelection} -like '{username}'" | Out-String
