@@ -28,34 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.getUserButton = new System.Windows.Forms.Button();
-            this.usernameTextBox = new System.Windows.Forms.TextBox();
+            this.getItemButton = new System.Windows.Forms.Button();
+            this.searchTextBox = new System.Windows.Forms.TextBox();
             this.statusLabel = new System.Windows.Forms.Label();
             this.resultTextBox = new System.Windows.Forms.RichTextBox();
             this.optionsListBox = new System.Windows.Forms.CheckedListBox();
             this.filterList = new System.Windows.Forms.ListBox();
             this.ifMultipleLabel = new System.Windows.Forms.Label();
             this.whichNumberUD = new System.Windows.Forms.NumericUpDown();
+            this.multipleCheckBox = new System.Windows.Forms.CheckBox();
+            this.userRButton = new System.Windows.Forms.RadioButton();
+            this.computerRButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.whichNumberUD)).BeginInit();
             this.SuspendLayout();
             // 
-            // getUserButton
+            // getItemButton
             // 
-            this.getUserButton.Location = new System.Drawing.Point(100, 120);
-            this.getUserButton.Name = "getUserButton";
-            this.getUserButton.Size = new System.Drawing.Size(215, 23);
-            this.getUserButton.TabIndex = 0;
-            this.getUserButton.Text = "Obtenir les informations de l\'utilisateur";
-            this.getUserButton.UseVisualStyleBackColor = true;
-            this.getUserButton.Click += new System.EventHandler(this.Button1_Click);
+            this.getItemButton.Location = new System.Drawing.Point(100, 120);
+            this.getItemButton.Name = "getItemButton";
+            this.getItemButton.Size = new System.Drawing.Size(215, 23);
+            this.getItemButton.TabIndex = 0;
+            this.getItemButton.Text = "Obtenir les informations de l\'utilisateur";
+            this.getItemButton.UseVisualStyleBackColor = true;
+            this.getItemButton.Click += new System.EventHandler(this.Button1_Click);
             // 
-            // usernameTextBox
+            // searchTextBox
             // 
-            this.usernameTextBox.Location = new System.Drawing.Point(100, 83);
-            this.usernameTextBox.Name = "usernameTextBox";
-            this.usernameTextBox.Size = new System.Drawing.Size(215, 20);
-            this.usernameTextBox.TabIndex = 1;
-            this.usernameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ScriptTextBox_KeyDown);
+            this.searchTextBox.Location = new System.Drawing.Point(100, 83);
+            this.searchTextBox.Name = "searchTextBox";
+            this.searchTextBox.Size = new System.Drawing.Size(215, 20);
+            this.searchTextBox.TabIndex = 1;
+            this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ScriptTextBox_KeyDown);
             // 
             // statusLabel
             // 
@@ -72,6 +75,8 @@
             // 
             // resultTextBox
             // 
+            this.resultTextBox.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.resultTextBox.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.resultTextBox.Location = new System.Drawing.Point(32, 178);
             this.resultTextBox.Name = "resultTextBox";
             this.resultTextBox.ReadOnly = true;
@@ -90,7 +95,7 @@
             "Adresse E-mail",
             "Nom Technique",
             "Actif",
-            "Nom Complet",
+            "Nom Complete",
             "SID"});
             this.optionsListBox.Location = new System.Drawing.Point(447, 12);
             this.optionsListBox.Name = "optionsListBox";
@@ -106,11 +111,12 @@
             "Identifiant",
             "Adresse E-mail",
             "Nom Technique",
-            "Nom Complet",
-            "SID"});
+            "Nom Complete",
+            "SID",
+            "Actif"});
             this.filterList.Location = new System.Drawing.Point(447, 155);
             this.filterList.Name = "filterList";
-            this.filterList.Size = new System.Drawing.Size(325, 95);
+            this.filterList.Size = new System.Drawing.Size(325, 108);
             this.filterList.TabIndex = 5;
             // 
             // ifMultipleLabel
@@ -139,19 +145,53 @@
             0,
             0});
             // 
+            // multipleCheckBox
+            // 
+            this.multipleCheckBox.Location = new System.Drawing.Point(450, 336);
+            this.multipleCheckBox.Name = "multipleCheckBox";
+            this.multipleCheckBox.Size = new System.Drawing.Size(322, 24);
+            this.multipleCheckBox.TabIndex = 8;
+            this.multipleCheckBox.Text = "Voir le tout";
+            this.multipleCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // userRButton
+            // 
+            this.userRButton.Checked = true;
+            this.userRButton.Location = new System.Drawing.Point(450, 367);
+            this.userRButton.Name = "userRButton";
+            this.userRButton.Size = new System.Drawing.Size(322, 21);
+            this.userRButton.TabIndex = 9;
+            this.userRButton.TabStop = true;
+            this.userRButton.Text = "Utilisateurs";
+            this.userRButton.UseVisualStyleBackColor = true;
+            this.userRButton.CheckedChanged += new System.EventHandler(this.UserRButton_CheckedChanged);
+            // 
+            // computerRButton
+            // 
+            this.computerRButton.Location = new System.Drawing.Point(450, 394);
+            this.computerRButton.Name = "computerRButton";
+            this.computerRButton.Size = new System.Drawing.Size(322, 21);
+            this.computerRButton.TabIndex = 10;
+            this.computerRButton.Text = "Ordinateurs";
+            this.computerRButton.UseVisualStyleBackColor = true;
+            this.computerRButton.CheckedChanged += new System.EventHandler(this.ComputerRButton_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.computerRButton);
+            this.Controls.Add(this.userRButton);
+            this.Controls.Add(this.multipleCheckBox);
             this.Controls.Add(this.whichNumberUD);
             this.Controls.Add(this.ifMultipleLabel);
             this.Controls.Add(this.filterList);
             this.Controls.Add(this.optionsListBox);
             this.Controls.Add(this.resultTextBox);
             this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.usernameTextBox);
-            this.Controls.Add(this.getUserButton);
+            this.Controls.Add(this.searchTextBox);
+            this.Controls.Add(this.getItemButton);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -164,14 +204,17 @@
 
         #endregion
 
-        private System.Windows.Forms.Button getUserButton;
-        private System.Windows.Forms.TextBox usernameTextBox;
+        private System.Windows.Forms.Button getItemButton;
+        private System.Windows.Forms.TextBox searchTextBox;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.RichTextBox resultTextBox;
         private System.Windows.Forms.CheckedListBox optionsListBox;
         private System.Windows.Forms.ListBox filterList;
         private System.Windows.Forms.Label ifMultipleLabel;
         private System.Windows.Forms.NumericUpDown whichNumberUD;
+        private System.Windows.Forms.CheckBox multipleCheckBox;
+        private System.Windows.Forms.RadioButton userRButton;
+        private System.Windows.Forms.RadioButton computerRButton;
     }
 }
 

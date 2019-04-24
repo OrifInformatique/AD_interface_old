@@ -1,1 +1,1 @@
-Get-ADUser -Filter "{FilterSelection} -like '{username}'" | Out-String
+Get-ADUser -Filter "{FilterSelection} -like '{part}'" | Out-String
