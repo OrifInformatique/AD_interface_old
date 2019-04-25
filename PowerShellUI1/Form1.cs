@@ -10,12 +10,14 @@ namespace PowerShellUI1
 
     public partial class Form1 : Form
     {
-        const string scriptPath = "/Scripts/",
-            separator = "――――――",
-            computerScript = "getComputer.ps1",
+        // Name of the folder containing the scripts
+        const string scriptSubfolder = "/Scripts/",
+            // String that separates the multiple entries
+            entrySeparator = "――――――",
             userScript = "getUser.ps1";
 
         readonly string path;
+        readonly string[] chooseItemText = { "Il y a ", "s à choix." };
         readonly Dictionary<string, string> convert = new Dictionary<string, string>() {
             {"nom", "Surname"},
             {"prénom", "GivenName"},
@@ -32,20 +34,21 @@ namespace PowerShellUI1
             "Nom Technique", "Actif", "Nom", "Identifiant", "SID"
         },
             userOptions = new Collection<string>() {
-                "Nom Complet", "Prénom", "addresse E-mail"
+                "Nom Complet", "Prénom", "Addresse E-mail"
             },
             computerOptions = new Collection<string>() { "Nom DNS" },
             currentList = new Collection<string>();
 
-        string scriptName, userPart, psText;
+        string psText;
         string[] psTexts;
-        Dictionary<string, bool> options;
         bool isUser = true;
+        Dictionary<string, bool> options;
         PowerShell ps;
 
         public Form1()
         {
             InitializeComponent();
+            this.CenterToScreen();
             iconvert = new Dictionary<string, string>();
             // Reverse convert dictionary
             foreach (KeyValuePair<string, string> entry in convert)
@@ -63,6 +66,8 @@ namespace PowerShellUI1
                 int index = path.LastIndexOf("\\");
                 path = path.Substring(0, index);
             }
+            searchTextBox.Select();
+            filterList.SelectedItem = "Identifiant";
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -73,7 +78,7 @@ namespace PowerShellUI1
         {
             statusLabel.Visible = false;
             psText = "";
-            userPart = searchTextBox.Text;
+            string userPart = searchTextBox.Text, selected, scriptName, scriptContent;
             if (userPart.Equals(""))
             {
                 // A user should be entered
@@ -83,21 +88,10 @@ namespace PowerShellUI1
             }
             // Create a new powershell
             ps = PowerShell.Create();
-            string selected;
-            if (isUser)
-            {
-                scriptName = userScript;
-                selected = "utilisateur";
-            }
-            else
-            {
-                scriptName = computerScript;
-                selected = "ordinateur";
-            }
-            string currentPath = path + scriptPath + scriptName;
+            scriptName = userScript;
+            string currentPath = path + scriptSubfolder + scriptName;
 
             // Read script
-            string scriptContent = "";
             try
             {
                 using (StreamReader strReader = new StreamReader(currentPath))
@@ -114,6 +108,15 @@ namespace PowerShellUI1
                 return;
             }
             // Set the filter
+            if (isUser)
+            {
+                selected = "utilisateur";
+            }
+            else
+            {
+                selected = "ordinateur";
+                scriptContent = scriptContent.Replace("Get-ADUser", "Get-ADComputer");
+            }
             string filterSelection = "SamAccountName";
             if (filterList.SelectedItem != null)
             {
@@ -131,6 +134,12 @@ namespace PowerShellUI1
                 }
             }
             scriptContent = scriptContent.Replace("{part}", userPart).Replace("{FilterSelection}", filterSelection);
+            if (sender == ownWindowButton)
+            {
+                // Show the results in their own window
+                scriptContent = scriptContent.Replace("Out-String", "Out-Gridview -Title 'Informations sur les " + selected + "s'");
+                // TODO: Find out how to show only some part of the items
+            }
             // Launch script
             ps.AddScript(scriptContent);
             try
@@ -150,7 +159,7 @@ namespace PowerShellUI1
             }
             ps.Dispose();
             // Nothing was found
-            if (psText.Equals(""))
+            if (psText.Equals("") && sender != ownWindowButton)
             {
                 statusLabel.Text = "Erreur: ";
                 if (filterList.SelectedItem != null)
@@ -171,8 +180,12 @@ namespace PowerShellUI1
             // Isolate the users
             if (psText.IndexOf("\r\n\r\n") != -1)
             {
+                ifMultipleLabel.Enabled = true;
+                whichNumberUD.Enabled = true;
+                multipleCheckBox.Enabled = true;
                 psTexts = psText.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 var selectedUser = whichNumberUD.Value;
+                ifMultipleLabel.Text = chooseItemText[0] + psTexts.Length + " " + selected + chooseItemText[1];
                 if (psTexts.Length >= selectedUser)
                 {
                     psText = psTexts[(int)selectedUser - 1];
@@ -186,6 +199,12 @@ namespace PowerShellUI1
                     psText = psTexts[0];
                 }
             }
+            else
+            {
+                ifMultipleLabel.Enabled = false;
+                whichNumberUD.Enabled = false;
+                multipleCheckBox.Enabled = false;
+            }
             if (!multipleCheckBox.Checked || psTexts.Length == 1)
             {
                 resultTextBox.Text = GetItem();
@@ -197,6 +216,10 @@ namespace PowerShellUI1
         }
 
         // User-related functions
+        /// <summary>
+        /// Converts psText into a string.
+        /// </summary>
+        /// <returns>A formatted string of the item.</returns>
         private string GetItem()
         {
             // Load the prepared text
@@ -229,6 +252,11 @@ namespace PowerShellUI1
             return resultText;
         }
 
+        /// <summary>
+        /// Loads psTexts and converts every entry into a chunk of string.
+        /// Uses separator for making sure that you're not seeing everything glued
+        /// </summary>
+        /// <returns>A formatted string with all the items</returns>
         private string GetItems()
         {
             // Load the prepared texts
@@ -246,7 +274,7 @@ namespace PowerShellUI1
                             resultText += texts[convert[entry.Key]];
                         }
                     }
-                    resultText += "\r\n" + separator + "\r\n\r\n";
+                    resultText += "\r\n" + entrySeparator + "\r\n\r\n";
                 }
             }
             else
@@ -261,17 +289,21 @@ namespace PowerShellUI1
                             if (texts.ContainsKey(entry.Value))
                                 resultText += texts[entry.Value];
                         }
-                        resultText += "\r\n" + separator + "\r\n\r\n";
+                        resultText += "\r\n" + entrySeparator + "\r\n\r\n";
                     }
                 }
             }
             // Remove last separator and trim
-            resultText = resultText.Substring(0, resultText.LastIndexOf(separator)).Trim();
+            resultText = resultText.Substring(0, resultText.LastIndexOf(entrySeparator)).Trim();
             // Return the result text
             return resultText;
         }
 
         // Other functions
+        /// <summary>
+        /// Using psText, it makes a dictionary of all the content from "key : value"
+        /// </summary>
+        /// <returns>A ready to use dictionary for output text</returns>
         private Dictionary<string, string> GetResultText()
         {
             Dictionary<string, string> res = new Dictionary<string, string>();
@@ -294,6 +326,15 @@ namespace PowerShellUI1
             return res;
         }
 
+        private void MultipleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Button1_Click(sender, null);
+        }
+
+        /// <summary>
+        /// Using psTexts, it makes an array of dictionaries that have all the content from "key : value"
+        /// </summary>
+        /// <returns>A ready to use array of dictionaries for output text</returns>
         private Dictionary<string, string>[] GetResultTexts()
         {
             Dictionary<string, string>[] res = new Dictionary<string, string>[psTexts.Length];
@@ -323,6 +364,10 @@ namespace PowerShellUI1
             return res;
         }
 
+        /// <summary>
+        /// Checks all the options and updates the option dictionary
+        /// </summary>
+        /// <returns>Whether there is at least one option enabled or not</returns>
         private bool CheckOptions()
         {
             bool anyTrue = false;
@@ -347,6 +392,9 @@ namespace PowerShellUI1
             return anyTrue;
         }
 
+        /// <summary>
+        /// Updates the content boxes that have all user options.
+        /// </summary>
         private void UpdateOptionBoxes()
         {
             if (currentList != null)
@@ -360,9 +408,14 @@ namespace PowerShellUI1
                 }
                 optionsListBox.Refresh();
                 filterList.Refresh();
+                filterList.SelectedItem = "Identifiant";
             }
         }
 
+        /// <summary>
+        /// Updates the collection currentlist
+        /// </summary>
+        /// <param name="otherlist">The additional list to add in the currentlist</param>
         private void UpdateCurrentList(Collection<string> otherlist)
         {
             currentList.Clear();
@@ -384,7 +437,6 @@ namespace PowerShellUI1
                 isUser = true;
                 getItemButton.Text = "Obtenir les informations de l'utilisateur";
                 computerRButton.Checked = false;
-                ifMultipleLabel.Text = "S'il y a plusieurs utilisateurs, choisir le quel montrer";
                 UpdateCurrentList(userOptions);
                 UpdateOptionBoxes();
             }
@@ -397,7 +449,6 @@ namespace PowerShellUI1
                 isUser = false;
                 getItemButton.Text = "Obtenir les informations de l'ordinateur";
                 userRButton.Checked = false;
-                ifMultipleLabel.Text = "S'il y a plusieurs ordinateurs, choisir le quel montrer";
                 UpdateCurrentList(computerOptions);
                 UpdateOptionBoxes();
             }

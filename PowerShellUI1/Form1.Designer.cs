@@ -39,14 +39,15 @@
             this.multipleCheckBox = new System.Windows.Forms.CheckBox();
             this.userRButton = new System.Windows.Forms.RadioButton();
             this.computerRButton = new System.Windows.Forms.RadioButton();
+            this.ownWindowButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.whichNumberUD)).BeginInit();
             this.SuspendLayout();
             // 
             // getItemButton
             // 
-            this.getItemButton.Location = new System.Drawing.Point(100, 120);
+            this.getItemButton.Location = new System.Drawing.Point(35, 113);
             this.getItemButton.Name = "getItemButton";
-            this.getItemButton.Size = new System.Drawing.Size(215, 23);
+            this.getItemButton.Size = new System.Drawing.Size(170, 41);
             this.getItemButton.TabIndex = 0;
             this.getItemButton.Text = "Obtenir les informations de l\'utilisateur";
             this.getItemButton.UseVisualStyleBackColor = true;
@@ -54,9 +55,9 @@
             // 
             // searchTextBox
             // 
-            this.searchTextBox.Location = new System.Drawing.Point(100, 83);
+            this.searchTextBox.Location = new System.Drawing.Point(35, 83);
             this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(215, 20);
+            this.searchTextBox.Size = new System.Drawing.Size(347, 20);
             this.searchTextBox.TabIndex = 1;
             this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ScriptTextBox_KeyDown);
             // 
@@ -121,6 +122,7 @@
             // 
             // ifMultipleLabel
             // 
+            this.ifMultipleLabel.Enabled = false;
             this.ifMultipleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ifMultipleLabel.Location = new System.Drawing.Point(447, 279);
             this.ifMultipleLabel.Name = "ifMultipleLabel";
@@ -130,6 +132,7 @@
             // 
             // whichNumberUD
             // 
+            this.whichNumberUD.Enabled = false;
             this.whichNumberUD.Location = new System.Drawing.Point(450, 301);
             this.whichNumberUD.Minimum = new decimal(new int[] {
             1,
@@ -147,19 +150,21 @@
             // 
             // multipleCheckBox
             // 
-            this.multipleCheckBox.Location = new System.Drawing.Point(450, 336);
+            this.multipleCheckBox.Enabled = false;
+            this.multipleCheckBox.Location = new System.Drawing.Point(450, 327);
             this.multipleCheckBox.Name = "multipleCheckBox";
-            this.multipleCheckBox.Size = new System.Drawing.Size(322, 24);
+            this.multipleCheckBox.Size = new System.Drawing.Size(322, 20);
             this.multipleCheckBox.TabIndex = 8;
             this.multipleCheckBox.Text = "Voir le tout";
             this.multipleCheckBox.UseVisualStyleBackColor = true;
+            this.multipleCheckBox.CheckedChanged += new System.EventHandler(this.MultipleCheckBox_CheckedChanged);
             // 
             // userRButton
             // 
             this.userRButton.Checked = true;
-            this.userRButton.Location = new System.Drawing.Point(450, 367);
+            this.userRButton.Location = new System.Drawing.Point(450, 363);
             this.userRButton.Name = "userRButton";
-            this.userRButton.Size = new System.Drawing.Size(322, 21);
+            this.userRButton.Size = new System.Drawing.Size(322, 20);
             this.userRButton.TabIndex = 9;
             this.userRButton.TabStop = true;
             this.userRButton.Text = "Utilisateurs";
@@ -168,19 +173,30 @@
             // 
             // computerRButton
             // 
-            this.computerRButton.Location = new System.Drawing.Point(450, 394);
+            this.computerRButton.Location = new System.Drawing.Point(450, 389);
             this.computerRButton.Name = "computerRButton";
-            this.computerRButton.Size = new System.Drawing.Size(322, 21);
+            this.computerRButton.Size = new System.Drawing.Size(322, 20);
             this.computerRButton.TabIndex = 10;
             this.computerRButton.Text = "Ordinateurs";
             this.computerRButton.UseVisualStyleBackColor = true;
             this.computerRButton.CheckedChanged += new System.EventHandler(this.ComputerRButton_CheckedChanged);
+            // 
+            // ownWindowButton
+            // 
+            this.ownWindowButton.Location = new System.Drawing.Point(211, 113);
+            this.ownWindowButton.Name = "ownWindowButton";
+            this.ownWindowButton.Size = new System.Drawing.Size(170, 41);
+            this.ownWindowButton.TabIndex = 11;
+            this.ownWindowButton.Text = "Montrer les informations sur une autre fenêtre";
+            this.ownWindowButton.UseVisualStyleBackColor = true;
+            this.ownWindowButton.Click += new System.EventHandler(this.Button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ownWindowButton);
             this.Controls.Add(this.computerRButton);
             this.Controls.Add(this.userRButton);
             this.Controls.Add(this.multipleCheckBox);
@@ -215,6 +231,7 @@
         private System.Windows.Forms.CheckBox multipleCheckBox;
         private System.Windows.Forms.RadioButton userRButton;
         private System.Windows.Forms.RadioButton computerRButton;
+        private System.Windows.Forms.Button ownWindowButton;
     }
 }
 

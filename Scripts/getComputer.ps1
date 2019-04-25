@@ -1,1 +1,0 @@
-Get-ADComputer -Filter "{FilterSelection} -like '{part}'" | Out-String
