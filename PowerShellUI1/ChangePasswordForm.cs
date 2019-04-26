@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
+using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PowerShellUI1
@@ -72,7 +67,7 @@ namespace PowerShellUI1
                 var results = ps.Invoke();
                 foreach (var result in results)
                 {
-                    if (!int.TryParse(result.ToString(), out int i))
+                    if (int.TryParse(result.ToString(), out int i))
                     {
                         minPasswordLength = i;
                     }
@@ -111,7 +106,13 @@ namespace PowerShellUI1
             }
 
             scriptContent = scriptContent.Replace("{part}", username).Replace("{newPassword}", password);
-            var credential = System.Net.CredentialCache.DefaultNetworkCredentials;
+            SecureString userPassword = new SecureString();
+            foreach (char c in currentUserPasswordTextBox.Text.ToCharArray())
+            {
+                userPassword.AppendChar(c);
+            }
+            username = currentUserTextBox.Text;
+            PSCredential credential = new PSCredential(username, userPassword);
             ps = PowerShell.Create()
                 .AddCommand("Set-Variable")
                 .AddParameter("Name", "credential")
@@ -120,7 +121,7 @@ namespace PowerShellUI1
             try
             {
                 var results = ps.Invoke();
-                foreach (var result in results)
+                foreach (PSObject result in results)
                 {
                     // TODO: Find someone who can test that
                     errorLabel.Visible = true;

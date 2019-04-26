@@ -56,7 +56,11 @@ namespace PowerShellUI1
                 Arguments = path + scriptSubfolder + installScript,
                 CreateNoWindow = false
             };
-            System.Diagnostics.Process.Start(newProcessInfo);
+            try
+            {
+                System.Diagnostics.Process.Start(newProcessInfo);
+            }
+            catch { }
         }
     }
 }

@@ -38,7 +38,7 @@
             this.openRetrieveFrom.Location = new System.Drawing.Point(177, 12);
             this.openRetrieveFrom.Name = "openRetrieveFrom";
             this.openRetrieveFrom.Size = new System.Drawing.Size(158, 40);
-            this.openRetrieveFrom.TabIndex = 0;
+            this.openRetrieveFrom.TabIndex = 1;
             this.openRetrieveFrom.Text = "Informations";
             this.openRetrieveFrom.UseVisualStyleBackColor = true;
             this.openRetrieveFrom.Click += new System.EventHandler(this.OpenARetreiveForm);
@@ -58,7 +58,7 @@
             this.openPwdForm.Location = new System.Drawing.Point(341, 12);
             this.openPwdForm.Name = "openPwdForm";
             this.openPwdForm.Size = new System.Drawing.Size(158, 40);
-            this.openPwdForm.TabIndex = 1;
+            this.openPwdForm.TabIndex = 2;
             this.openPwdForm.Text = "Mot de passe";
             this.openPwdForm.UseVisualStyleBackColor = true;
             this.openPwdForm.Click += new System.EventHandler(this.OpenPwdForm_Click);
@@ -71,6 +71,7 @@
             this.Controls.Add(this.InstallADScriptButton);
             this.Controls.Add(this.openPwdForm);
             this.Controls.Add(this.openRetrieveFrom);
+            this.MinimumSize = new System.Drawing.Size(550, 125);
             this.Name = "ChoiceForm";
             this.Text = "Choisir une option";
             this.ResumeLayout(false);

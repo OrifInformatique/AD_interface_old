@@ -48,7 +48,7 @@
             this.getItemButton.Location = new System.Drawing.Point(35, 113);
             this.getItemButton.Name = "getItemButton";
             this.getItemButton.Size = new System.Drawing.Size(170, 41);
-            this.getItemButton.TabIndex = 0;
+            this.getItemButton.TabIndex = 1;
             this.getItemButton.Text = "Obtenir les informations de l\'utilisateur";
             this.getItemButton.UseVisualStyleBackColor = true;
             this.getItemButton.Click += new System.EventHandler(this.Button1_Click);
@@ -58,12 +58,12 @@
             this.searchTextBox.Location = new System.Drawing.Point(35, 83);
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(347, 20);
-            this.searchTextBox.TabIndex = 1;
+            this.searchTextBox.TabIndex = 0;
             this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // statusLabel
             // 
-            this.statusLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.statusLabel.BackColor = System.Drawing.Color.Salmon;
             this.statusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusLabel.ForeColor = System.Drawing.Color.Red;
             this.statusLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -82,7 +82,7 @@
             this.resultTextBox.Name = "resultTextBox";
             this.resultTextBox.ReadOnly = true;
             this.resultTextBox.Size = new System.Drawing.Size(350, 260);
-            this.resultTextBox.TabIndex = 3;
+            this.resultTextBox.TabIndex = 9;
             this.resultTextBox.Text = "";
             // 
             // optionsListBox
@@ -101,7 +101,7 @@
             this.optionsListBox.Location = new System.Drawing.Point(447, 12);
             this.optionsListBox.Name = "optionsListBox";
             this.optionsListBox.Size = new System.Drawing.Size(325, 124);
-            this.optionsListBox.TabIndex = 4;
+            this.optionsListBox.TabIndex = 5;
             // 
             // filterList
             // 
@@ -118,7 +118,7 @@
             this.filterList.Location = new System.Drawing.Point(447, 155);
             this.filterList.Name = "filterList";
             this.filterList.Size = new System.Drawing.Size(325, 108);
-            this.filterList.TabIndex = 5;
+            this.filterList.TabIndex = 6;
             // 
             // ifMultipleLabel
             // 
@@ -141,7 +141,7 @@
             0});
             this.whichNumberUD.Name = "whichNumberUD";
             this.whichNumberUD.Size = new System.Drawing.Size(322, 20);
-            this.whichNumberUD.TabIndex = 7;
+            this.whichNumberUD.TabIndex = 3;
             this.whichNumberUD.Value = new decimal(new int[] {
             1,
             0,
@@ -154,7 +154,7 @@
             this.multipleCheckBox.Location = new System.Drawing.Point(450, 327);
             this.multipleCheckBox.Name = "multipleCheckBox";
             this.multipleCheckBox.Size = new System.Drawing.Size(322, 20);
-            this.multipleCheckBox.TabIndex = 8;
+            this.multipleCheckBox.TabIndex = 4;
             this.multipleCheckBox.Text = "Voir le tout";
             this.multipleCheckBox.UseVisualStyleBackColor = true;
             this.multipleCheckBox.CheckedChanged += new System.EventHandler(this.MultipleCheckBox_CheckedChanged);
@@ -165,7 +165,7 @@
             this.userRButton.Location = new System.Drawing.Point(450, 363);
             this.userRButton.Name = "userRButton";
             this.userRButton.Size = new System.Drawing.Size(322, 20);
-            this.userRButton.TabIndex = 9;
+            this.userRButton.TabIndex = 7;
             this.userRButton.TabStop = true;
             this.userRButton.Text = "Utilisateurs";
             this.userRButton.UseVisualStyleBackColor = true;
@@ -176,7 +176,7 @@
             this.computerRButton.Location = new System.Drawing.Point(450, 389);
             this.computerRButton.Name = "computerRButton";
             this.computerRButton.Size = new System.Drawing.Size(322, 20);
-            this.computerRButton.TabIndex = 10;
+            this.computerRButton.TabIndex = 8;
             this.computerRButton.Text = "Ordinateurs";
             this.computerRButton.UseVisualStyleBackColor = true;
             this.computerRButton.CheckedChanged += new System.EventHandler(this.ComputerRButton_CheckedChanged);
@@ -186,7 +186,7 @@
             this.ownWindowButton.Location = new System.Drawing.Point(211, 113);
             this.ownWindowButton.Name = "ownWindowButton";
             this.ownWindowButton.Size = new System.Drawing.Size(170, 41);
-            this.ownWindowButton.TabIndex = 11;
+            this.ownWindowButton.TabIndex = 2;
             this.ownWindowButton.Text = "Montrer les informations sur une autre fenêtre";
             this.ownWindowButton.UseVisualStyleBackColor = true;
             this.ownWindowButton.Click += new System.EventHandler(this.Button1_Click);
@@ -208,7 +208,11 @@
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.searchTextBox);
             this.Controls.Add(this.getItemButton);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "RetreiveForm";
+            this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Voir les informations d\'un utilisateur / ordinateur";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             ((System.ComponentModel.ISupportInitialize)(this.whichNumberUD)).EndInit();

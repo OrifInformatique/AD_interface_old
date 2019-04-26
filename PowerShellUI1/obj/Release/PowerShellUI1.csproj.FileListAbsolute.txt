@@ -5,10 +5,12 @@ C:\xampp\htdocs\AD_interface\PowerShellUI1\bin\Release\System.Management.Automat
 C:\xampp\htdocs\AD_interface\PowerShellUI1\bin\Release\Microsoft.Management.Infrastructure.dll
 C:\xampp\htdocs\AD_interface\PowerShellUI1\bin\Release\System.Management.Automation.xml
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.csprojAssemblyReference.cache
-C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.Form1.resources
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.Properties.Resources.resources
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.csproj.GenerateResource.cache
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.csproj.CoreCompileInputs.cache
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.csproj.CopyComplete
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.exe
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.pdb
+C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.ChangePasswordForm.resources
+C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.ChoiceForm.resources
+C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.RetreiveForm.resources
