@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PowerShellUI1")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Obtains and displays data about users / computers")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PowerShellUI1")]

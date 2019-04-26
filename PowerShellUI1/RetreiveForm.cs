@@ -8,17 +8,15 @@ using System.Collections.ObjectModel;
 namespace PowerShellUI1
 {
 
-    public partial class Form1 : Form
+    public partial class RetreiveForm : Form
     {
         // Name of the folder containing the scripts
-        const string scriptSubfolder = "/Scripts/",
+        readonly string scriptSubfolder = ChoiceForm.ScriptSubfolder,
             // String that separates the multiple entries
             entrySeparator = "――――――",
             // Script that contains the logic behind the loading
-            userScript = "getUser.ps1";
-
-        // Path to the home folder
-        readonly string path;
+            userScript = "getUser.ps1",
+            path;
         // Strings of text for the list of different items
         readonly string[] chooseItemText = { "Il y a ", "s à choix." };
         // Translates between powershell filters and french
@@ -57,7 +55,7 @@ namespace PowerShellUI1
         // options for the user
         Dictionary<string, bool> options;
 
-        public Form1()
+        public RetreiveForm()
         {
             InitializeComponent();
             this.CenterToScreen();
@@ -78,6 +76,26 @@ namespace PowerShellUI1
                 int index = path.LastIndexOf("\\");
                 path = path.Substring(0, index);
             }
+
+            searchTextBox.Select();
+            filterList.SelectedItem = "Identifiant";
+        }
+        public RetreiveForm(string path)
+        {
+            InitializeComponent();
+            this.CenterToScreen();
+            iconvert = new Dictionary<string, string>();
+            // Reverse convert dictionary
+            foreach (KeyValuePair<string, string> entry in convert)
+            {
+                iconvert[entry.Value] = entry.Key;
+            }
+            UpdateCurrentList(userOptions);
+            UpdateOptionBoxes();
+
+            // Get the current path
+            this.path = path;
+
             searchTextBox.Select();
             filterList.SelectedItem = "Identifiant";
         }
@@ -168,7 +186,10 @@ namespace PowerShellUI1
                 statusLabel.Visible = true;
                 return;
             }
-            ps.Dispose();
+            finally
+            {
+                ps.Dispose();
+            }
 
             // In case nothing was returned from the script
             if (psText.Equals(""))
@@ -505,21 +526,9 @@ namespace PowerShellUI1
             }
         }
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        private void SubmitOnEnter(object sender, KeyEventArgs e)
         {
             switch(e.KeyCode) {
-                // Press enter for input
-                case Keys.Enter:
-                    Button1_Click(sender, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-            }
-        }
-
-        private void ScriptTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode) {
                 // Press enter for input
                 case Keys.Enter:
                     Button1_Click(sender, null);

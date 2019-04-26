@@ -1,6 +1,6 @@
 ﻿namespace PowerShellUI1
 {
-    partial class Form1
+    partial class RetreiveForm
     {
         /// <summary>
         /// Required designer variable.
@@ -59,7 +59,7 @@
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(347, 20);
             this.searchTextBox.TabIndex = 1;
-            this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ScriptTextBox_KeyDown);
+            this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // statusLabel
             // 
@@ -191,7 +191,7 @@
             this.ownWindowButton.UseVisualStyleBackColor = true;
             this.ownWindowButton.Click += new System.EventHandler(this.Button1_Click);
             // 
-            // Form1
+            // RetreiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -208,9 +208,9 @@
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.searchTextBox);
             this.Controls.Add(this.getItemButton);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.Name = "RetreiveForm";
+            this.Text = "Voir les informations d\'un utilisateur / ordinateur";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             ((System.ComponentModel.ISupportInitialize)(this.whichNumberUD)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
