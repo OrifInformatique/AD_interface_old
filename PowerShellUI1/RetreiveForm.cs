@@ -10,12 +10,14 @@ namespace PowerShellUI1
 
     public partial class RetreiveForm : Form
     {
+        #region variables
         // Name of the folder containing the scripts
         readonly string scriptSubfolder = ChoiceForm.ScriptSubfolder,
             // String that separates the multiple entries
             entrySeparator = "――――――",
             // Script that contains the logic behind the loading
             userScript = "getUser.ps1",
+            // Path to scripts
             path;
         // Strings of text for the list of different items
         readonly string[] chooseItemText = { "Il y a ", "s à choix." };
@@ -54,6 +56,7 @@ namespace PowerShellUI1
         bool isUser = true;
         // options for the user
         Dictionary<string, bool> options;
+        #endregion
 
         public RetreiveForm()
         {
@@ -100,6 +103,7 @@ namespace PowerShellUI1
             filterList.SelectedItem = "Identifiant";
         }
 
+        // Main function
         private void Button1_Click(object sender, EventArgs e)
         {
             statusLabel.Visible = false;
@@ -254,6 +258,7 @@ namespace PowerShellUI1
                     ifMultipleLabel.Text = "S'il y a plusieurs ordinateurs, choisir le quel montrer";
                 }
             }
+
             if (!multipleCheckBox.Checked || psTexts.Length == 1)
             {
                 // Only 1 item selected, display it to the user
@@ -266,7 +271,7 @@ namespace PowerShellUI1
             }
         }
 
-        // User-related functions
+        #region Item-related functions
         /// <summary>
         /// Converts psText into a string.
         /// </summary>
@@ -349,8 +354,9 @@ namespace PowerShellUI1
             // Return the result text
             return resultText;
         }
+        #endregion
 
-        // Other functions
+        #region Other functions
         /// <summary>
         /// Using psText, it makes a dictionary of all the content from "key : value"
         /// </summary>
@@ -467,14 +473,6 @@ namespace PowerShellUI1
             }
         }
 
-        private void MultipleCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            // Reloads the data shown
-            Button1_Click(sender, null);
-            // Removes an ugly scrollbar that isn't even working
-            resultTextBox.Refresh();
-        }
-
         /// <summary>
         /// Updates the collection currentlist
         /// </summary>
@@ -493,6 +491,16 @@ namespace PowerShellUI1
             {
                 currentList.Add(s);
             }
+        }
+        #endregion
+
+        #region Events
+        private void MultipleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            // Reloads the data shown
+            Button1_Click(sender, null);
+            // Removes an ugly scrollbar that isn't even working
+            resultTextBox.Refresh();
         }
 
         private void UserRButton_CheckedChanged(object sender, EventArgs e)
@@ -537,5 +545,6 @@ namespace PowerShellUI1
                     break;
             }
         }
+        #endregion
     }
 }

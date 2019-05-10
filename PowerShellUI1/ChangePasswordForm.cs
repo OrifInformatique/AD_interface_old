@@ -2,7 +2,6 @@
 using System.IO;
 using System.Management.Automation;
 using System.Security;
-using System.Text;
 using System.Windows.Forms;
 
 namespace PowerShellUI1
@@ -33,32 +32,38 @@ namespace PowerShellUI1
 
         private void ChangePasswordButton_Click(object sender, EventArgs e)
         {
+            // Hide error label until we get an error
             errorLabel.Visible = false;
+            // Declare all future variables
             string username = usernameTextBox.Text,
                 password = newPasswordTextBox.Text,
                 passwordAgain = newPasswordAgainTextBox.Text,
                 scriptContent,
                 currentPath;
 
-            if (password.Equals(""))
+            // Is the password empty
+            if (password.Equals("") || newPasswordTextBox.Equals("") || currentUserPasswordTextBox.Text.Equals(""))
             {
                 errorLabel.Visible = true;
                 errorLabel.Text = "Entrez un mot de passe!";
                 return;
             }
+            // Is there a username provided
+            else if (username.Equals("") || currentUserTextBox.Text.Equals(""))
+            {
+                errorLabel.Visible = true;
+                errorLabel.Text = "Fournissez un nom d'utilisateur";
+                return;
+            }
+            // Is the new password repeated twice
             else if (!password.Equals(passwordAgain))
             {
                 errorLabel.Visible = true;
                 errorLabel.Text = "Le mot de passe doit être le même!";
                 return;
             }
-            else if (username.Equals(""))
-            {
-                errorLabel.Visible = true;
-                errorLabel.Text = "Fournissez un nom d'utilisateur";
-                return;
-            }
 
+            // Create a new powershell
             PowerShell ps = PowerShell.Create();
             int minPasswordLength = 6;
             ps.AddScript("(Get-ADDefaultDomainPasswordPolicy).MinPasswordLength");
@@ -67,6 +72,7 @@ namespace PowerShellUI1
                 var results = ps.Invoke();
                 foreach (var result in results)
                 {
+                    // Get the minimum length of password
                     if (int.TryParse(result.ToString(), out int i))
                     {
                         minPasswordLength = i;
@@ -82,6 +88,7 @@ namespace PowerShellUI1
                 ps.Dispose();
             }
 
+            // Check that password is longer than minimum length
             if (!(password.Length >= minPasswordLength))
             {
                 errorLabel.Visible = true;
@@ -89,9 +96,11 @@ namespace PowerShellUI1
                 return;
             }
 
+            // Prepare script path
             currentPath = path + scriptSubfolder + passwordScript;
             try
             {
+                // Read script
                 using (StreamReader strReader = new StreamReader(currentPath))
                 {
                     scriptContent = strReader.ReadToEnd();
@@ -105,21 +114,14 @@ namespace PowerShellUI1
                 return;
             }
 
+            // Prepare the script for usage
             scriptContent = scriptContent.Replace("{part}", username).Replace("{newPassword}", password);
-            SecureString userPassword = new SecureString();
-            foreach (char c in currentUserPasswordTextBox.Text.ToCharArray())
-            {
-                userPassword.AppendChar(c);
-            }
-            username = currentUserTextBox.Text;
-            PSCredential credential = new PSCredential(username, userPassword);
             ps = PowerShell.Create()
-                .AddCommand("Set-Variable")
-                .AddParameter("Name", "credential")
-                .AddParameter("Value", credential)
+                // May need AddCommand instead of AddScript
                 .AddScript(scriptContent);
             try
             {
+                // Launch script and check for results
                 var results = ps.Invoke();
                 foreach (PSObject result in results)
                 {
