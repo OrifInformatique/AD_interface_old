@@ -12,6 +12,9 @@ namespace PowerShellUI1
             scriptSubfolder = ChoiceForm.ScriptSubfolder,
             passwordScript = "ChangeUserPassword.ps1";
 
+        /// <summary>
+        /// Creates a new <code>ChangePasswordForm</code>.
+        /// </summary>
         public ChangePasswordForm()
         {
             InitializeComponent();
@@ -24,12 +27,21 @@ namespace PowerShellUI1
             }
         }
 
+        /// <summary>
+        /// Creates a new <code>ChangePasswordForm</code>.
+        /// </summary>
+        /// <param name="path">Path to the base file.</param>
         public ChangePasswordForm(string path)
         {
             InitializeComponent();
             this.path = path;
         }
 
+        /// <summary>
+        /// The main part of the form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ChangePasswordButton_Click(object sender, EventArgs e)
         {
             // Hide error label until we get an error
@@ -114,10 +126,12 @@ namespace PowerShellUI1
                 return;
             }
 
+            // TODO: Find someone who can test that
             // Prepare the script for usage
             scriptContent = scriptContent.Replace("{part}", username).Replace("{newPassword}", password);
             ps = PowerShell.Create()
                 // May need AddCommand instead of AddScript
+                //.AddCommand(scriptContent);
                 .AddScript(scriptContent);
             try
             {
@@ -125,7 +139,6 @@ namespace PowerShellUI1
                 var results = ps.Invoke();
                 foreach (PSObject result in results)
                 {
-                    // TODO: Find someone who can test that
                     errorLabel.Visible = true;
                     errorLabel.Text += result;
                 }
@@ -143,6 +156,11 @@ namespace PowerShellUI1
             }
         }
 
+        /// <summary>
+        /// Does <code>ChangePasswordButton_Click</code> when someone presses enter.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SubmitOnEnter(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)

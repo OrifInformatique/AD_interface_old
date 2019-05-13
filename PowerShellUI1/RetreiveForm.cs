@@ -58,6 +58,9 @@ namespace PowerShellUI1
         Dictionary<string, bool> options;
         #endregion
 
+        /// <summary>
+        /// Creates a new <code>RetreiveForm</code>.
+        /// </summary>
         public RetreiveForm()
         {
             InitializeComponent();
@@ -83,6 +86,11 @@ namespace PowerShellUI1
             searchTextBox.Select();
             filterList.SelectedItem = "Identifiant";
         }
+
+        /// <summary>
+        /// Creates a new <code>RetreiveForm</code>.
+        /// </summary>
+        /// <param name="path">The path to the base file.</param>
         public RetreiveForm(string path)
         {
             InitializeComponent();
@@ -103,7 +111,11 @@ namespace PowerShellUI1
             filterList.SelectedItem = "Identifiant";
         }
 
-        // Main function
+        /// <summary>
+        /// The main function of the form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button1_Click(object sender, EventArgs e)
         {
             statusLabel.Visible = false;
@@ -495,6 +507,11 @@ namespace PowerShellUI1
         #endregion
 
         #region Events
+        /// <summary>
+        /// Executes <code>Button1_Click</code>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MultipleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             // Reloads the data shown
@@ -503,6 +520,11 @@ namespace PowerShellUI1
             resultTextBox.Refresh();
         }
 
+        /// <summary>
+        /// Updates <code>isUser</code>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UserRButton_CheckedChanged(object sender, EventArgs e)
         {
             // Checks that button was checked
@@ -519,6 +541,11 @@ namespace PowerShellUI1
             }
         }
 
+        /// <summary>
+        /// Updates <code>isUser</code>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ComputerRButton_CheckedChanged(object sender, EventArgs e)
         {
             if (computerRButton.Checked)
@@ -534,6 +561,11 @@ namespace PowerShellUI1
             }
         }
 
+        /// <summary>
+        /// As the name suggests, makes it so you submit when you press enter.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SubmitOnEnter(object sender, KeyEventArgs e)
         {
             switch(e.KeyCode) {

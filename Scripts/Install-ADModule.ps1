@@ -1,68 +1,18 @@
-﻿#requires -RunAsAdministrator
-
-<#-----------------------------------------------------------------------------
-Ashley McGlone, Microsoft Premier Field Engineer
-http://aka.ms/goateepfe
-February 2016
-Install-ADModule
-For Windows 10 performs the following tasks:
-- Downloads and installs Windows 10 RSAT for the appropriate system architecture
-- Enables the RSAT AD PowerShell feature
-- Updates help for the AD module
-- Displays validation output
--------------------------------------------------------------------------------
-LEGAL DISCLAIMER
-This Sample Code is provided for the purpose of illustration only and is not
-intended to be used in a production environment.  THIS SAMPLE CODE AND ANY
-RELATED INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.  We grant You a
-nonexclusive, royalty-free right to use and modify the Sample Code and to
-reproduce and distribute the object code form of the Sample Code, provided
-that You agree: (i) to not use Our name, logo, or trademarks to market Your
-software product in which the Sample Code is embedded; (ii) to include a valid
-copyright notice on Your software product in which the Sample Code is embedded;
-and (iii) to indemnify, hold harmless, and defend Us and Our suppliers from and
-against any claims or lawsuits, including attorneys’ fees, that arise or result
-from the use or distribution of the Sample Code.
- 
-This posting is provided "AS IS" with no warranties, and confers no rights. Use
-of included script samples are subject to the terms specified
-at http://www.microsoft.com/info/cpyright.htm.
------------------------------------------------------------------------------#>
-
-
+#requires -RunAsAdministrator
 <#
 .SYNOPSIS
-Installs the AD PowerShell module from RSAT for Windows 10
+Installs the ActiveDirectory module in Powershell.
 .DESCRIPTION
-Performs the following tasks:
-- Downloads and installs Windows 10 RSAT for the appropriate system architecture
-- Enables the RSAT AD PowerShell feature
-- Updates help for the AD module
-- Displays validation output
+Does the following tasks:
+- Checks that the OS is Windows 10
+- Installs RSAT if not already installed
+- Updates help for ActiveDirectory
 .NOTES
-Requires an elevated PowerShell host.
+Requires Windows 10.
+Requires an elevated host.
+Requires an internet connection.
 
-Requires an internet connection to download the RSAT install.
-
-The RSAT hotfix download (<100MB) will be stored in the Downloads
-folder of the user running the script.
-
-Checks the following before taking action:
-- Is the system running Windows 10?
-- Is the RSAT already installed?
-- Is the AD PowerShell feature already enabled?
-.PARAMETER Test
-Switch parameter to validate the install. Performs the following:
-- Displays the RSAT update file that was downloaded.
-- Confirms the hotfix is installed.
-- Displays help for Get-ADDomain.
-- Run the cmdlets Get-ADDomain.
-.EXAMPLE
-Install-ADModule -Verbose
-.EXAMPLE
-Install-ADModule -Test -Verbose
+I have no idea if this works.
 #>
 Function Install-ADModule {
     [CmdletBinding()]
@@ -70,31 +20,34 @@ Function Install-ADModule {
         [switch]$Test = $false
     )
 
-    If ((Get-CimInstance Win32_OperatingSystem).Caption -like "*Windows 10*") {
-        Write-Verbose '---This system is running Windows 10'
-    } Else {
-        Write-Warning '---This system is not running Windows 10'
+    # Script needs internet
+    If (-not (Test-Connection 8.8.8.8 -Quiet)) {
+        #throw [System.Exception] "Internet is required for installation"
+        Write-Warning "Internet is required for installation!"
         break
     }
 
+    # Script only works in Windows 10, make sure it it the current OS
+    If ((Get-CimInstance Win32_OperatingSystem).Caption -notlike "*Windows 10*") {
+        #throw [System.Exception] "OS must be Windows 10"
+        Write-Warning 'OS must be Windows 10!'
+        break
+    }
+
+    # Checks that RSAT is not installed, otherwise install it
     If (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue) {
-
-        Write-Verbose '---RSAT for Windows 10 is already installed'
-
+        Write-Verbose "---RSAT already installed"
     } Else {
+        # Downloads the RSAT
+        Write-Verbose "---Downloading RSAT"
 
-        Write-Verbose '---Downloading RSAT for Windows 10'
-
+        # Checks the architecture and selects the correct version of RSAT
         If ((Get-CimInstance Win32_ComputerSystem).SystemType -like "x64*") {
             $dl = 'WindowsTH-KB2693643-x64.msu'
         } Else {
             $dl = 'WindowsTH-KB2693643-x86.msu'
         }
-        Write-Verbose "---Hotfix file is $dl"
 
-        Write-Verbose "---$(Get-Date)"
-        #Download file sample
-        #https://gallery.technet.microsoft.com/scriptcenter/files-from-websites-4a181ff3
         $BaseURL = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/'
         $URL = $BaseURL + $dl
         $Destination = Join-Path -Path $HOME -ChildPath "Downloads\$dl"
@@ -102,58 +55,32 @@ Function Install-ADModule {
         $WebClient.DownloadFile($URL,$Destination)
         $WebClient.Dispose()
 
-        Write-Verbose '---Installing RSAT for Windows 10'
-        Write-Verbose "---$(Get-Date)"
-        # http://stackoverflow.com/questions/21112244/apply-service-packs-msu-file-update-using-powershell-scripts-on-local-server
+        # Installs the RSAT
+        Write-Verbose '---Installing RSAT'
         wusa.exe $Destination /quiet /norestart /log:$home\Documents\RSAT.log
 
-        # wusa.exe returns immediately. Loop until install complete.
+        # Until done installing, keep writing dots
+        Write-Host "Installing" -NoNewLine
         do {
-            Write-Host "." -NoNewline
-            Start-Sleep -Seconds 3
+            Write-Host "." -NoNewLine
+            Start-Sleep -Seconds 5
         } until (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue)
         Write-Host "."
-        Write-Verbose "---$(Get-Date)"
-    }
-
-    # The latest versions of the RSAT automatically enable all RSAT features
-    If ((Get-WindowsOptionalFeature -Online -FeatureName `
-        RSATClient-Roles-AD-Powershell -ErrorAction SilentlyContinue).State `
-        -eq 'Enabled') {
-
-        Write-Verbose '---RSAT AD PowerShell already enabled'
-
-    } Else {
-
-        Write-Verbose '---Enabling RSAT AD PowerShell'
-        Enable-WindowsOptionalFeature -Online -FeatureName RSATClient-Roles-AD-Powershell
+        Write-Verbose "---Installation finished"
 
     }
 
-    Write-Verbose '---Downloading help for AD PowerShell'
-    Update-Help -Module ActiveDirectory -Verbose -Force
+    # Since enabling the RSAT was not working in the original, there is no reason to keep it
 
-    Write-Verbose '---ActiveDirectory PowerShell module install complete.'
-
-    # Verify
-    If ($Test) {
-        Write-Verbose '---Validating AD PowerShell install'
-        dir (Join-Path -Path $HOME -ChildPath Downloads\*msu)
-        Get-HotFix -Id KB2693643
-        Get-Help Get-ADDomain
-        Get-ADDomain
+    # Download / Update the help for ActiveDirectory
+    Write-Verbose "---Updating help for ActiveDirectory"
+    $isVerbose = $false
+    If ($PSBoundParameters.ContainsKey('Verbose')) {
+        $isVerbose = $PsBoundParameters.Get_Item('Verbose')
     }
+    Update-Help -Module ActiveDirectory -Verbose:$isVerbose -Force
+
 }
 
-Get-Help Install-ADModule -Full
-
+# Launch function
 Install-ADModule -Verbose
-
-#Install-ADModule -Test -Verbose
-
-break
-
-<#
-# Remove
-wusa.exe /uninstall /kb:2693643 /quiet /norestart /log:$home\RSAT.log
-#>

@@ -14,3 +14,4 @@ C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.pdb
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.ChangePasswordForm.resources
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.ChoiceForm.resources
 C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.RetreiveForm.resources
+C:\xampp\htdocs\AD_interface\PowerShellUI1\obj\Release\PowerShellUI1.InstallForm.resources

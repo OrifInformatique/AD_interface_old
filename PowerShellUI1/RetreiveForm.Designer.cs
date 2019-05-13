@@ -84,6 +84,7 @@
             this.resultTextBox.Size = new System.Drawing.Size(350, 260);
             this.resultTextBox.TabIndex = 9;
             this.resultTextBox.Text = "";
+            this.resultTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // optionsListBox
             // 
@@ -102,6 +103,7 @@
             this.optionsListBox.Name = "optionsListBox";
             this.optionsListBox.Size = new System.Drawing.Size(325, 124);
             this.optionsListBox.TabIndex = 5;
+            this.optionsListBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // filterList
             // 
@@ -119,6 +121,7 @@
             this.filterList.Name = "filterList";
             this.filterList.Size = new System.Drawing.Size(325, 108);
             this.filterList.TabIndex = 6;
+            this.filterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // ifMultipleLabel
             // 
@@ -147,6 +150,7 @@
             0,
             0,
             0});
+            this.whichNumberUD.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // multipleCheckBox
             // 
@@ -158,6 +162,7 @@
             this.multipleCheckBox.Text = "Voir le tout";
             this.multipleCheckBox.UseVisualStyleBackColor = true;
             this.multipleCheckBox.CheckedChanged += new System.EventHandler(this.MultipleCheckBox_CheckedChanged);
+            this.multipleCheckBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // userRButton
             // 
