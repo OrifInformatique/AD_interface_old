@@ -7,7 +7,7 @@ namespace PowerShellUI1
 {
     public partial class InstallForm : Form
     {
-        readonly string path,
+        readonly string path = ChoiceForm.Path,
             scriptSubfolder = ChoiceForm.ScriptSubfolder,
             installScript = "Install-ADModule.ps1";
 
@@ -16,18 +16,23 @@ namespace PowerShellUI1
         /// </summary>
         public static bool IsADInstalled { get; private set; }
 
+        #region Constructors
         /// <summary>
         /// Creates a new instance of InstallForm.
         /// </summary>
         public InstallForm()
         {
             InitializeComponent();
-            path = Path.GetDirectoryName(Application.ExecutablePath);
-            // Go upward until in AD_interface  
-            while (!path.EndsWith("AD_interface"))
+            // Don't recalculate path if it already exists
+            if (path == null)
             {
-                int index = path.LastIndexOf("\\");
-                path = path.Substring(0, index);
+                path = Path.GetDirectoryName(Application.ExecutablePath);
+                // Go upward until in AD_interface  
+                while (!path.EndsWith("AD_interface"))
+                {
+                    int index = path.LastIndexOf("\\");
+                    path = path.Substring(0, index);
+                }
             }
         }
 
@@ -40,7 +45,9 @@ namespace PowerShellUI1
             InitializeComponent();
             this.path = path;
         }
+        #endregion
 
+        #region AD installation
         /// <summary>
         /// Installs the ActiveDirectory module on powershell.
         /// Does nothing if it is already installed.
@@ -199,13 +206,14 @@ namespace PowerShellUI1
 
             return true;
         }
+        #endregion
 
         /// <summary>
         /// Updates <code>IsADInstalled</code> to true if AD was installed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        static public void UpdateIsADInstalled(object sender = null, FormClosedEventArgs e = null)
+        public static void UpdateIsADInstalled(object sender = null, FormClosedEventArgs e = null)
         {
             StringBuilder strBui = new StringBuilder();
             System.Diagnostics.Process process = new System.Diagnostics.Process

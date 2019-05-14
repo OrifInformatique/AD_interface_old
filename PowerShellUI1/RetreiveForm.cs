@@ -18,7 +18,7 @@ namespace PowerShellUI1
             // Script that contains the logic behind the loading
             userScript = "getUser.ps1",
             // Path to scripts
-            path;
+            path = ChoiceForm.Path;
         // Strings of text for the list of different items
         readonly string[] chooseItemText = { "Il y a ", "s à choix." };
         // Translates between powershell filters and french
@@ -58,6 +58,7 @@ namespace PowerShellUI1
         Dictionary<string, bool> options;
         #endregion
 
+        #region Constructors
         /// <summary>
         /// Creates a new <code>RetreiveForm</code>.
         /// </summary>
@@ -75,12 +76,15 @@ namespace PowerShellUI1
             UpdateOptionBoxes();
 
             // Get the current path
-            path = Path.GetDirectoryName(Application.ExecutablePath);
-            // Go upward until in AD_interface  
-            while (!path.EndsWith("AD_interface"))
+            if (path == null)
             {
-                int index = path.LastIndexOf("\\");
-                path = path.Substring(0, index);
+                path = Path.GetDirectoryName(Application.ExecutablePath);
+                // Go upward until in AD_interface  
+                while (!path.EndsWith("AD_interface"))
+                {
+                    int index = path.LastIndexOf("\\");
+                    path = path.Substring(0, index);
+                }
             }
 
             searchTextBox.Select();
@@ -110,13 +114,14 @@ namespace PowerShellUI1
             searchTextBox.Select();
             filterList.SelectedItem = "Identifiant";
         }
+        #endregion
 
         /// <summary>
         /// The main function of the form.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Button1_Click(object sender, EventArgs e)
+        private void RetreiveData(object sender, EventArgs e)
         {
             statusLabel.Visible = false;
             psText = "";
@@ -515,7 +520,7 @@ namespace PowerShellUI1
         private void MultipleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             // Reloads the data shown
-            Button1_Click(sender, null);
+            RetreiveData(sender, null);
             // Removes an ugly scrollbar that isn't even working
             resultTextBox.Refresh();
         }
@@ -537,7 +542,7 @@ namespace PowerShellUI1
                 computerRButton.Checked = false;
                 UpdateCurrentList(userOptions);
                 UpdateOptionBoxes();
-                Button1_Click(sender, null);
+                RetreiveData(sender, null);
             }
         }
 
@@ -557,7 +562,7 @@ namespace PowerShellUI1
                 userRButton.Checked = false;
                 UpdateCurrentList(computerOptions);
                 UpdateOptionBoxes();
-                Button1_Click(sender, null);
+                RetreiveData(sender, null);
             }
         }
 
@@ -571,7 +576,7 @@ namespace PowerShellUI1
             switch(e.KeyCode) {
                 // Press enter for input
                 case Keys.Enter:
-                    Button1_Click(sender, null);
+                    RetreiveData(sender, null);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;

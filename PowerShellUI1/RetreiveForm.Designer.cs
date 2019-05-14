@@ -51,7 +51,7 @@
             this.getItemButton.TabIndex = 1;
             this.getItemButton.Text = "Obtenir les informations de l\'utilisateur";
             this.getItemButton.UseVisualStyleBackColor = true;
-            this.getItemButton.Click += new System.EventHandler(this.Button1_Click);
+            this.getItemButton.Click += new System.EventHandler(this.RetreiveData);
             // 
             // searchTextBox
             // 
@@ -194,7 +194,7 @@
             this.ownWindowButton.TabIndex = 2;
             this.ownWindowButton.Text = "Montrer les informations sur une autre fenêtre";
             this.ownWindowButton.UseVisualStyleBackColor = true;
-            this.ownWindowButton.Click += new System.EventHandler(this.Button1_Click);
+            this.ownWindowButton.Click += new System.EventHandler(this.RetreiveData);
             // 
             // RetreiveForm
             // 

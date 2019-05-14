@@ -8,22 +8,26 @@ namespace PowerShellUI1
 {
     public partial class ChangePasswordForm : Form
     {
-        readonly string path,
+        readonly string path = ChoiceForm.Path,
             scriptSubfolder = ChoiceForm.ScriptSubfolder,
             passwordScript = "ChangeUserPassword.ps1";
 
+        #region Constructors
         /// <summary>
         /// Creates a new <code>ChangePasswordForm</code>.
         /// </summary>
         public ChangePasswordForm()
         {
             InitializeComponent();
-            path = Path.GetDirectoryName(Application.ExecutablePath);
-            // Go upward until in AD_interface  
-            while (!path.EndsWith("AD_interface"))
+            if (path == null)
             {
-                int index = path.LastIndexOf("\\");
-                path = path.Substring(0, index);
+                path = Path.GetDirectoryName(Application.ExecutablePath);
+                // Go upward until in AD_interface  
+                while (!path.EndsWith("AD_interface"))
+                {
+                    int index = path.LastIndexOf("\\");
+                    path = path.Substring(0, index);
+                }
             }
         }
 
@@ -36,13 +40,14 @@ namespace PowerShellUI1
             InitializeComponent();
             this.path = path;
         }
+        #endregion
 
         /// <summary>
         /// The main part of the form.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ChangePasswordButton_Click(object sender, EventArgs e)
+        private void ChangePassword(object sender, EventArgs e)
         {
             // Hide error label until we get an error
             errorLabel.Visible = false;
@@ -167,7 +172,7 @@ namespace PowerShellUI1
             {
                 // Press enter for input
                 case Keys.Enter:
-                    ChangePasswordButton_Click(sender, null);
+                    ChangePassword(sender, null);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;

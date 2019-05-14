@@ -23,7 +23,7 @@ that You agree: (i) to not use Our name, logo, or trademarks to market Your
 software product in which the Sample Code is embedded; (ii) to include a valid
 copyright notice on Your software product in which the Sample Code is embedded;
 and (iii) to indemnify, hold harmless, and defend Us and Our suppliers from and
-against any claims or lawsuits, including attorneys’ fees, that arise or result
+against any claims or lawsuits, including attorneys? fees, that arise or result
 from the use or distribution of the Sample Code.
  
 This posting is provided "AS IS" with no warranties, and confers no rights. Use
@@ -60,11 +60,11 @@ Switch parameter to validate the install. Performs the following:
 - Displays help for Get-ADDomain.
 - Run the cmdlets Get-ADDomain.
 .EXAMPLE
-Install-ADModule_1 -Verbose
+Install-ADModule_Old -Verbose
 .EXAMPLE
-Install-ADModule_1 -Test -Verbose
+Install-ADModule_Old -Test -Verbose
 #>
-Function Install-ADModule_1 {
+Function Install-ADModule_Old {
     [CmdletBinding()]
     Param(
         [switch]$Test = $false
@@ -145,11 +145,11 @@ Function Install-ADModule_1 {
     }
 }
 
-Get-Help Install-ADModule_1 -Full
+Get-Help Install-ADModule_Old -Full
 
-Install-ADModule_1 -Verbose
+Install-ADModule_Old -Verbose
 
-#Install-ADModule_1 -Test -Verbose
+#Install-ADModule_Old -Test -Verbose
 
 break
 

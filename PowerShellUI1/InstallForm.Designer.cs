@@ -71,7 +71,7 @@
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.installBtn);
             this.Name = "InstallForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "InstallForm";
             this.ResumeLayout(false);
 

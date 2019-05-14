@@ -38,7 +38,6 @@ Function Install-ADModule {
     If (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue) {
         Write-Verbose "---RSAT already installed"
     } Else {
-        # Downloads the RSAT
         Write-Verbose "---Downloading RSAT"
 
         # Checks the architecture and selects the correct version of RSAT
@@ -48,6 +47,7 @@ Function Install-ADModule {
             $dl = 'WindowsTH-KB2693643-x86.msu'
         }
 
+        # Downloads the RSAT
         $BaseURL = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/'
         $URL = $BaseURL + $dl
         $Destination = Join-Path -Path $HOME -ChildPath "Downloads\$dl"

@@ -58,7 +58,7 @@
             this.changePasswordButton.TabIndex = 5;
             this.changePasswordButton.Text = "Changer le mot de passe de l\'utilisateur";
             this.changePasswordButton.UseVisualStyleBackColor = true;
-            this.changePasswordButton.Click += new System.EventHandler(this.ChangePasswordButton_Click);
+            this.changePasswordButton.Click += new System.EventHandler(this.ChangePassword);
             this.changePasswordButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // newPasswordTextBox
