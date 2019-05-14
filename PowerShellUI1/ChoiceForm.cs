@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace PowerShellUI1
@@ -8,9 +8,6 @@ namespace PowerShellUI1
     {
         #region Variables
         private const string scriptSubfolder = "\\Scripts\\";
-        private static string pathInner;
-
-        private readonly ToolTip toolTip = new ToolTip();
 
         private RetreiveForm retreiveData;
         private ChangePasswordForm changePassword;
@@ -24,7 +21,7 @@ namespace PowerShellUI1
         /// <summary>
         /// Path to AD_interface folder.
         /// </summary>
-        public static string Path { get => pathInner; private set => pathInner = value; }
+        public static string Path { get; private set; }
         #endregion
 
         /// <summary>
@@ -33,25 +30,24 @@ namespace PowerShellUI1
         public ChoiceForm()
         {
             InitializeComponent();
-            toolTip.SetToolTip(openRetrieveFrom, "Ouvrir un formulaire pour voir les informations d'un utilisateur / ordinateur");
 
             InstallForm.UpdateIsADInstalled();
             if (!InstallForm.IsADInstalled)
                 MessageBox.Show("Le module AD n'est pas installé. L'application ne peut pas fonctionner sans.");
 
             // Get the current path
-            pathInner = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            Path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             // Go upward until in AD_interface  
-            while (!pathInner.EndsWith("AD_interface"))
+            while (!Path.EndsWith("AD_interface"))
             {
-                int index = pathInner.LastIndexOf("\\");
-                pathInner = pathInner.Substring(0, index);
+                int index = Path.LastIndexOf("\\");
+                Path = Path.Substring(0, index);
             }
 
             UpdateEnabledButtons();
         }
 
-        #region Forms
+        #region Forms opening
         /// <summary>
         /// Opens a <code>RetreiveForm</code>.
         /// </summary>
@@ -60,7 +56,7 @@ namespace PowerShellUI1
         private void OpenRetreiveForm(object sender, EventArgs e)
         {
             if (retreiveData == null || retreiveData.IsDisposed)
-                retreiveData = new RetreiveForm(pathInner);
+                retreiveData = new RetreiveForm(Path);
             retreiveData.Show();
         }
 
@@ -72,7 +68,7 @@ namespace PowerShellUI1
         private void OpenPwdForm_Click(object sender, EventArgs e)
         {
             if (changePassword == null || changePassword.IsDisposed)
-                changePassword = new ChangePasswordForm(pathInner);
+                changePassword = new ChangePasswordForm(Path);
             changePassword.Show();
         }
 
@@ -84,9 +80,9 @@ namespace PowerShellUI1
         private void OpenInstallADForm_Click(object sender, EventArgs e)
         {
             if (installAD == null || installAD.IsDisposed)
-                installAD = new InstallForm(pathInner);
-            installAD.Show();
+                installAD = new InstallForm(Path);
             installAD.FormClosed += new FormClosedEventHandler(UpdateEnabledButtons);
+            installAD.Show();
         }
         #endregion
 

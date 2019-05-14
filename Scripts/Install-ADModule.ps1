@@ -47,6 +47,8 @@ Function Install-ADModule {
             $dl = 'WindowsTH-KB2693643-x86.msu'
         }
 
+        Write-Verbose "---Download finished"
+
         # Downloads the RSAT
         $BaseURL = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/'
         $URL = $BaseURL + $dl

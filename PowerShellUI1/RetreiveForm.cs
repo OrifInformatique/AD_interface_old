@@ -263,6 +263,7 @@ namespace PowerShellUI1
             else
             {
                 // Disable choosing a specific item, there is only 1
+                psTexts = new string[] { psText };
                 ifMultipleLabel.Enabled = false;
                 whichNumberUD.Enabled = false;
                 multipleCheckBox.Enabled = false;

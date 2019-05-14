@@ -129,7 +129,7 @@
             this.ifMultipleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ifMultipleLabel.Location = new System.Drawing.Point(447, 279);
             this.ifMultipleLabel.Name = "ifMultipleLabel";
-            this.ifMultipleLabel.Size = new System.Drawing.Size(325, 18);
+            this.ifMultipleLabel.Size = new System.Drawing.Size(322, 20);
             this.ifMultipleLabel.TabIndex = 6;
             this.ifMultipleLabel.Text = "S\'il y a plusieurs utilisateurs, choisir le quel montrer";
             // 
@@ -150,6 +150,7 @@
             0,
             0,
             0});
+            this.whichNumberUD.ValueChanged += new System.EventHandler(this.RetreiveData);
             this.whichNumberUD.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // multipleCheckBox

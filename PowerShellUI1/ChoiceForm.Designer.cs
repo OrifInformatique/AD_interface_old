@@ -29,13 +29,16 @@
         private void InitializeComponent()
         {
             this.openRetrieveFrom = new System.Windows.Forms.Button();
-            this.OpenInstallADForm = new System.Windows.Forms.Button();
+            this.openInstallADForm = new System.Windows.Forms.Button();
             this.openPwdForm = new System.Windows.Forms.Button();
+            this.ADInstallInfoLabel = new System.Windows.Forms.Label();
+            this.RetreiveInfoLabel = new System.Windows.Forms.Label();
+            this.PwdInfoLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // openRetrieveFrom
             // 
-            this.openRetrieveFrom.Location = new System.Drawing.Point(177, 12);
+            this.openRetrieveFrom.Location = new System.Drawing.Point(176, 55);
             this.openRetrieveFrom.Name = "openRetrieveFrom";
             this.openRetrieveFrom.Size = new System.Drawing.Size(158, 40);
             this.openRetrieveFrom.TabIndex = 1;
@@ -43,19 +46,20 @@
             this.openRetrieveFrom.UseVisualStyleBackColor = true;
             this.openRetrieveFrom.Click += new System.EventHandler(this.OpenRetreiveForm);
             // 
-            // OpenInstallADForm
+            // openInstallADForm
             // 
-            this.OpenInstallADForm.Location = new System.Drawing.Point(12, 12);
-            this.OpenInstallADForm.Name = "OpenInstallADForm";
-            this.OpenInstallADForm.Size = new System.Drawing.Size(159, 40);
-            this.OpenInstallADForm.TabIndex = 0;
-            this.OpenInstallADForm.Text = "Installation";
-            this.OpenInstallADForm.UseVisualStyleBackColor = true;
-            this.OpenInstallADForm.Click += new System.EventHandler(this.OpenInstallADForm_Click);
+            this.openInstallADForm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.openInstallADForm.Location = new System.Drawing.Point(12, 55);
+            this.openInstallADForm.Name = "openInstallADForm";
+            this.openInstallADForm.Size = new System.Drawing.Size(158, 40);
+            this.openInstallADForm.TabIndex = 0;
+            this.openInstallADForm.Text = "Installation";
+            this.openInstallADForm.UseVisualStyleBackColor = true;
+            this.openInstallADForm.Click += new System.EventHandler(this.OpenInstallADForm_Click);
             // 
             // openPwdForm
             // 
-            this.openPwdForm.Location = new System.Drawing.Point(341, 12);
+            this.openPwdForm.Location = new System.Drawing.Point(341, 55);
             this.openPwdForm.Name = "openPwdForm";
             this.openPwdForm.Size = new System.Drawing.Size(158, 40);
             this.openPwdForm.TabIndex = 2;
@@ -63,15 +67,42 @@
             this.openPwdForm.UseVisualStyleBackColor = true;
             this.openPwdForm.Click += new System.EventHandler(this.OpenPwdForm_Click);
             // 
+            // ADInstallInfoLabel
+            // 
+            this.ADInstallInfoLabel.Location = new System.Drawing.Point(12, 12);
+            this.ADInstallInfoLabel.Name = "ADInstallInfoLabel";
+            this.ADInstallInfoLabel.Size = new System.Drawing.Size(158, 40);
+            this.ADInstallInfoLabel.TabIndex = 3;
+            this.ADInstallInfoLabel.Text = "Installe les fonctionnalités requises pour l\'application.";
+            // 
+            // RetreiveInfoLabel
+            // 
+            this.RetreiveInfoLabel.Location = new System.Drawing.Point(176, 12);
+            this.RetreiveInfoLabel.Name = "RetreiveInfoLabel";
+            this.RetreiveInfoLabel.Size = new System.Drawing.Size(158, 40);
+            this.RetreiveInfoLabel.TabIndex = 4;
+            this.RetreiveInfoLabel.Text = "Ouvre une fenêtre pour obtenir les informations sur un utilisateur/ordinateur.";
+            // 
+            // PwdInfoLabel
+            // 
+            this.PwdInfoLabel.Location = new System.Drawing.Point(341, 12);
+            this.PwdInfoLabel.Name = "PwdInfoLabel";
+            this.PwdInfoLabel.Size = new System.Drawing.Size(158, 40);
+            this.PwdInfoLabel.TabIndex = 5;
+            this.PwdInfoLabel.Text = "Ouvre une fenêtre pour changer le mot de passe d\'un utilisateur.";
+            // 
             // ChoiceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.OpenInstallADForm);
+            this.ClientSize = new System.Drawing.Size(514, 450);
+            this.Controls.Add(this.PwdInfoLabel);
+            this.Controls.Add(this.RetreiveInfoLabel);
+            this.Controls.Add(this.ADInstallInfoLabel);
+            this.Controls.Add(this.openInstallADForm);
             this.Controls.Add(this.openPwdForm);
             this.Controls.Add(this.openRetrieveFrom);
-            this.MinimumSize = new System.Drawing.Size(550, 125);
+            this.MinimumSize = new System.Drawing.Size(530, 125);
             this.Name = "ChoiceForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Choisir une option";
@@ -82,7 +113,10 @@
         #endregion
 
         private System.Windows.Forms.Button openRetrieveFrom;
-        private System.Windows.Forms.Button OpenInstallADForm;
+        private System.Windows.Forms.Button openInstallADForm;
         private System.Windows.Forms.Button openPwdForm;
+        private System.Windows.Forms.Label ADInstallInfoLabel;
+        private System.Windows.Forms.Label RetreiveInfoLabel;
+        private System.Windows.Forms.Label PwdInfoLabel;
     }
 }

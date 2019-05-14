@@ -46,7 +46,7 @@
             // 
             this.usernameTextBox.Location = new System.Drawing.Point(34, 167);
             this.usernameTextBox.Name = "usernameTextBox";
-            this.usernameTextBox.Size = new System.Drawing.Size(185, 20);
+            this.usernameTextBox.Size = new System.Drawing.Size(194, 20);
             this.usernameTextBox.TabIndex = 2;
             this.usernameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
@@ -66,7 +66,7 @@
             this.newPasswordTextBox.Location = new System.Drawing.Point(34, 227);
             this.newPasswordTextBox.Name = "newPasswordTextBox";
             this.newPasswordTextBox.PasswordChar = '•';
-            this.newPasswordTextBox.Size = new System.Drawing.Size(185, 20);
+            this.newPasswordTextBox.Size = new System.Drawing.Size(194, 20);
             this.newPasswordTextBox.TabIndex = 3;
             this.newPasswordTextBox.Text = "OrifInfo2009";
             this.newPasswordTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
@@ -75,7 +75,7 @@
             // 
             this.usernameLabel.Location = new System.Drawing.Point(34, 144);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(185, 20);
+            this.usernameLabel.Size = new System.Drawing.Size(194, 20);
             this.usernameLabel.TabIndex = 3;
             this.usernameLabel.Text = "Nom de l\'utilisateur à changer";
             this.usernameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -84,7 +84,7 @@
             // 
             this.passwordLabel.Location = new System.Drawing.Point(34, 204);
             this.passwordLabel.Name = "passwordLabel";
-            this.passwordLabel.Size = new System.Drawing.Size(185, 20);
+            this.passwordLabel.Size = new System.Drawing.Size(194, 20);
             this.passwordLabel.TabIndex = 4;
             this.passwordLabel.Text = "Nouveau mot de passe";
             this.passwordLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -93,7 +93,7 @@
             // 
             this.passwordAgainLabel.Location = new System.Drawing.Point(34, 268);
             this.passwordAgainLabel.Name = "passwordAgainLabel";
-            this.passwordAgainLabel.Size = new System.Drawing.Size(185, 20);
+            this.passwordAgainLabel.Size = new System.Drawing.Size(194, 20);
             this.passwordAgainLabel.TabIndex = 6;
             this.passwordAgainLabel.Text = "Répéter le nouveau mot de passe";
             this.passwordAgainLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -103,7 +103,7 @@
             this.newPasswordAgainTextBox.Location = new System.Drawing.Point(34, 291);
             this.newPasswordAgainTextBox.Name = "newPasswordAgainTextBox";
             this.newPasswordAgainTextBox.PasswordChar = '•';
-            this.newPasswordAgainTextBox.Size = new System.Drawing.Size(185, 20);
+            this.newPasswordAgainTextBox.Size = new System.Drawing.Size(194, 20);
             this.newPasswordAgainTextBox.TabIndex = 4;
             this.newPasswordAgainTextBox.Text = "OrifInfo2009";
             this.newPasswordAgainTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);

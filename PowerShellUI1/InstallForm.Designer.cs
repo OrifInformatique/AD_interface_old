@@ -35,7 +35,7 @@
             // 
             // installBtn
             // 
-            this.installBtn.Location = new System.Drawing.Point(12, 175);
+            this.installBtn.Location = new System.Drawing.Point(13, 195);
             this.installBtn.Name = "installBtn";
             this.installBtn.Size = new System.Drawing.Size(277, 62);
             this.installBtn.TabIndex = 0;
@@ -46,9 +46,9 @@
             // statusLabel
             // 
             this.statusLabel.BackColor = System.Drawing.Color.Salmon;
-            this.statusLabel.Location = new System.Drawing.Point(13, 13);
+            this.statusLabel.Location = new System.Drawing.Point(10, 9);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(276, 147);
+            this.statusLabel.Size = new System.Drawing.Size(276, 172);
             this.statusLabel.TabIndex = 1;
             this.statusLabel.Visible = false;
             // 
@@ -56,9 +56,9 @@
             // 
             this.resultLabel.AllowDrop = true;
             this.resultLabel.BackColor = System.Drawing.Color.PaleGreen;
-            this.resultLabel.Location = new System.Drawing.Point(16, 244);
+            this.resultLabel.Location = new System.Drawing.Point(13, 269);
             this.resultLabel.Name = "resultLabel";
-            this.resultLabel.Size = new System.Drawing.Size(273, 197);
+            this.resultLabel.Size = new System.Drawing.Size(276, 172);
             this.resultLabel.TabIndex = 2;
             this.resultLabel.Visible = false;
             // 
@@ -72,7 +72,7 @@
             this.Controls.Add(this.installBtn);
             this.Name = "InstallForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "InstallForm";
+            this.Text = "Installeur de l\'AD";
             this.ResumeLayout(false);
 
         }
