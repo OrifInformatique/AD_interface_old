@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace PowerShellUI1
 {
@@ -66,16 +67,17 @@ namespace PowerShellUI1
             statusLabel.Visible = false;
             // Obtain current execution policy.
             // Required for installation.
-            System.Diagnostics.Process process = new System.Diagnostics.Process
+            Process process = new Process
             {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
+                StartInfo = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
                     Verb = "runas",
                     Arguments = "Get-ExecutionPolicy",
                     CreateNoWindow = true,
+                    UseShellExecute = false,
                     RedirectStandardOutput = true,
-                    UseShellExecute = false
+                    RedirectStandardError = true,
                 }
             };
             // Obtain output data
@@ -99,79 +101,14 @@ namespace PowerShellUI1
             string currentExecPoli = strBui.ToString().ToLower();
             // Clears variables
             strBui.Clear();
-            // Checks that the policy is correct
-            bool resetRequired = false;
-            if (!(new string[] { "unrestricted", "remotesigned", "bypass" }).Contains(currentExecPoli))
-            {
-                // Otherwise, change it
-                if(!ChangeExecPoli())
-                {
-                    // Could not change the execution policy, cancel everything
-                    statusLabel.Visible = true;
-                    statusLabel.Text = "Erreur inconnue: Annulation de l'autorisation des scripts";
-                    return;
-                }
-                resetRequired = true;
-            }
 
-            UpdateIsADInstalled();
             if (!IsADInstalled)
             {
                 // Command not found, install AD
-                if (!InstallAD())
-                {
-                    // AD could not be installed
-                    ChangeExecPoli(currentExecPoli);
-                    statusLabel.Text = "Erreur inconnue: Annulation de l'installation du mode ActiveDirectory";
-                    statusLabel.Visible = true;
-                    return;
-                }
-            }
-
-            // Reset execution policy to what it was before
-            if (!ChangeExecPoli(currentExecPoli) && resetRequired)
-            {
-                // Could not reset the execution policy, cancel everything
-                statusLabel.Visible = true;
-                statusLabel.Text = "Erreur inconnue: Impossible de remettre l'execution de scripts comme précédent";
-                return;
+                InstallAD();
             }
 
             UpdateIsADInstalled();
-        }
-
-        /// <summary>
-        /// Changes the execution policy.
-        /// </summary>
-        /// <param name="newExecPoli">The new execution policy. Defaults to null.</param>
-        /// <returns>True if the policy was changed, false if it was not.</returns>
-        private bool ChangeExecPoli(string newExecPoli = null)
-        {
-            string arg = "set-executionpolicy remotesigned -force";
-            if (newExecPoli != null)
-            {
-                arg = arg.Replace("remotesigned", newExecPoli);
-            }
-            System.Diagnostics.Process process = new System.Diagnostics.Process
-            {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Verb = "runas",
-                    Arguments = arg,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                }
-            };
-            try
-            {
-                process.Start();
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
@@ -184,16 +121,16 @@ namespace PowerShellUI1
             statusLabel.Text = "Installation du module AD, veuillez patienter.\nÇa va prendre un moment.";
             statusLabel.Visible = true;
             // Load a new powershell
-            var newProcessInfo = new System.Diagnostics.ProcessStartInfo
+            ProcessStartInfo newProcessInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
                 Verb = "runas",
-                Arguments = path + scriptSubfolder + installScript,
+                Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + installScript}",
                 CreateNoWindow = false
             };
             try
             {
-                System.Diagnostics.Process.Start(newProcessInfo);
+                Process proc = Process.Start(newProcessInfo);
             }
             catch
             {
