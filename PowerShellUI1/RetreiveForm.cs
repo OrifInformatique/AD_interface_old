@@ -117,7 +117,7 @@ namespace PowerShellUI1
         #endregion
 
         /// <summary>
-        /// The main function of the form.
+        /// Retreives data depending on user input.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -514,7 +514,7 @@ namespace PowerShellUI1
 
         #region Events
         /// <summary>
-        /// Executes <code>Button1_Click</code>.
+        /// Calls <code>RetreiveData</code>.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -568,7 +568,7 @@ namespace PowerShellUI1
         }
 
         /// <summary>
-        /// As the name suggests, makes it so you submit when you press enter.
+        /// Calls <code>RetreiveData</code> when the user presses enter.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

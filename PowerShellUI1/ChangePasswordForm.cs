@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Management.Automation;
-using System.Security;
 using System.Windows.Forms;
 
 namespace PowerShellUI1
@@ -43,7 +42,8 @@ namespace PowerShellUI1
         #endregion
 
         /// <summary>
-        /// The main part of the form.
+        /// Changes the password of the user specified.
+        /// Theorically.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -162,7 +162,7 @@ namespace PowerShellUI1
         }
 
         /// <summary>
-        /// Does <code>ChangePasswordButton_Click</code> when someone presses enter.
+        /// Calls <code>ChangePassword</code> when the user presses enter.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

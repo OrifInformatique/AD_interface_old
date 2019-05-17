@@ -42,6 +42,7 @@
             this.installBtn.Text = "Installer les choses requises pour l\'application";
             this.installBtn.UseVisualStyleBackColor = true;
             this.installBtn.Click += new System.EventHandler(this.InstallADModulePowershell);
+            this.installBtn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InstallOnEnter);
             // 
             // statusLabel
             // 
@@ -73,6 +74,7 @@
             this.Name = "InstallForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Installeur de l\'AD";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InstallOnEnter);
             this.ResumeLayout(false);
 
         }

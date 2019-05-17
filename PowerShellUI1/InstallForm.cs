@@ -239,5 +239,23 @@ namespace PowerShellUI1
             catch { }
             IsADInstalled = strBui.ToString().Length != 0;
         }
+
+        /// <summary>
+        /// Calls <code>InstallADModulePowershell</code> when the user presses enter.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InstallOnEnter(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                // Press enter for input
+                case Keys.Enter:
+                    InstallADModulePowershell(sender, null);
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+            }
+        }
     }
 }
