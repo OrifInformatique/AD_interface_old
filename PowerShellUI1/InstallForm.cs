@@ -208,6 +208,7 @@ namespace PowerShellUI1
         }
         #endregion
 
+        #region Events
         /// <summary>
         /// Updates <code>IsADInstalled</code> to true if AD was installed.
         /// </summary>
@@ -257,5 +258,6 @@ namespace PowerShellUI1
                     break;
             }
         }
+        #endregion
     }
 }

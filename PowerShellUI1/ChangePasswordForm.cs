@@ -161,6 +161,7 @@ namespace PowerShellUI1
             }
         }
 
+        #region Events
         /// <summary>
         /// Calls <code>ChangePassword</code> when the user presses enter.
         /// </summary>
@@ -178,5 +179,6 @@ namespace PowerShellUI1
                     break;
             }
         }
+        #endregion
     }
 }

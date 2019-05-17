@@ -16,12 +16,10 @@ I have no idea if this works.
 #>
 Function Install-ADModule {
     [CmdletBinding()]
-    Param(
-        [switch]$Test = $false
-    )
+    Param()
 
     # Script needs internet
-    If (-not (Test-Connection 8.8.8.8 -Quiet)) {
+    If (!(Test-Connection 8.8.8.8 -Quiet)) {
         #throw [System.Exception] "Internet is required for installation"
         Write-Warning "Internet is required for installation!"
         break
@@ -69,7 +67,6 @@ Function Install-ADModule {
         } until (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue)
         Write-Host "."
         Write-Verbose "---Installation finished"
-
     }
 
     # Since enabling the RSAT was not working in the original, there is no reason to keep it
