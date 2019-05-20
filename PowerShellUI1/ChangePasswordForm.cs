@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Management.Automation;
 using System.Windows.Forms;
 
 namespace PowerShellUI1
 {
+    /// <summary>
+    /// <code>ChangePasswordForm</code> is for changing an user's password.
+    /// NOTE: untested.
+    /// </summary>
     public partial class ChangePasswordForm : Form
     {
-        readonly string path = ChoiceForm.Path,
+        private readonly string path = ChoiceForm.Path,
             scriptSubfolder = ChoiceForm.ScriptSubfolder,
             passwordScript = "ChangeUserPassword.ps1";
 
@@ -86,8 +91,8 @@ namespace PowerShellUI1
             ps.AddScript("(Get-ADDefaultDomainPasswordPolicy).MinPasswordLength");
             try
             {
-                var results = ps.Invoke();
-                foreach (var result in results)
+                Collection<PSObject> results = ps.Invoke();
+                foreach (PSObject result in results)
                 {
                     // Get the minimum length of password
                     if (int.TryParse(result.ToString(), out int i))
@@ -113,10 +118,10 @@ namespace PowerShellUI1
                 return;
             }
 
-            // Prepare script path
-            currentPath = path + scriptSubfolder + passwordScript;
             try
             {
+                // Prepare script path
+                currentPath = path + scriptSubfolder + passwordScript;
                 // Read script
                 using (StreamReader strReader = new StreamReader(currentPath))
                 {
@@ -141,7 +146,7 @@ namespace PowerShellUI1
             try
             {
                 // Launch script and check for results
-                var results = ps.Invoke();
+                Collection<PSObject> results = ps.Invoke();
                 foreach (PSObject result in results)
                 {
                     errorLabel.Visible = true;

@@ -1,11 +1,13 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace PowerShellUI1
 {
+    /// <summary>
+    /// <code>InstallForm</code> is for installing the ActiveDirectory PowerShell module.
+    /// </summary>
     public partial class InstallForm : Form
     {
         readonly string path = ChoiceForm.Path,
@@ -57,55 +59,19 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void InstallADModulePowershell(object sender, System.EventArgs e)
         {
-            if(IsADInstalled)
+            if (IsADInstalled)
             {
                 resultLabel.Visible = true;
                 resultLabel.Text = "AD déjà installée";
                 return;
             }
-            resultLabel.Visible = false;
-            statusLabel.Visible = false;
-            // Obtain current execution policy.
-            // Required for installation.
-            Process process = new Process
+            else
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Verb = "runas",
-                    Arguments = "Get-ExecutionPolicy",
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                }
-            };
-            // Obtain output data
-            StringBuilder strBui = new StringBuilder();
-            try
-            {
-                process.Start();
-                while(!process.HasExited)
-                {
-                    strBui.Append(process.StandardOutput.ReadToEnd());
-                }
-            }
-            catch
-            {
-                // Error in data, cancel fetching
-                statusLabel.Visible = true;
-                statusLabel.Text = "Erreur inconnue: Annulation de l'autorisation des scripts";
-                return;
-            }
-            // Current execution policy
-            string currentExecPoli = strBui.ToString().ToLower();
-            // Clears variables
-            strBui.Clear();
+                resultLabel.Visible = false;
+                statusLabel.Visible = false;
 
-            if (!IsADInstalled)
-            {
-                // Command not found, install AD
-                InstallAD();
+                // AD not installed yet, install it
+                _ = InstallAD();
             }
 
             UpdateIsADInstalled();
@@ -117,20 +83,21 @@ namespace PowerShellUI1
         /// <returns>True if the module was installed, false otherwise.</returns>
         private bool InstallAD()
         {
-            // Tell user that installation is in progress
-            statusLabel.Text = "Installation du module AD, veuillez patienter.\nÇa va prendre un moment.";
-            statusLabel.Visible = true;
             // Load a new powershell
-            ProcessStartInfo newProcessInfo = new ProcessStartInfo
-            {
-                FileName = "powershell.exe",
-                Verb = "runas",
-                Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + installScript}",
-                CreateNoWindow = false
-            };
             try
             {
-                Process proc = Process.Start(newProcessInfo);
+                Process proc = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Verb = "runas",
+                    Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + installScript}",
+                    CreateNoWindow = false
+                });
+                // Tell user that installation is in progress
+                statusLabel.Text = "Installation du module AD, veuillez patienter.\nÇa va prendre un moment.";
+                statusLabel.Visible = true;
+                while (!proc.HasExited) { };
+                statusLabel.Visible = false;
             }
             catch
             {
@@ -154,9 +121,9 @@ namespace PowerShellUI1
         public static void UpdateIsADInstalled(object sender = null, FormClosedEventArgs e = null)
         {
             StringBuilder strBui = new StringBuilder();
-            System.Diagnostics.Process process = new System.Diagnostics.Process
+            using (Process process = new Process
             {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
+                StartInfo = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
                     Verb = "runas",
@@ -165,16 +132,18 @@ namespace PowerShellUI1
                     RedirectStandardOutput = true,
                     UseShellExecute = false
                 }
-            };
-            try
+            })
             {
-                process.Start();
-                while (!process.HasExited)
+                try
                 {
-                    strBui.Append(process.StandardOutput.ReadToEnd());
+                    _ = process.Start();
+                    while (!process.HasExited)
+                    {
+                        strBui.Append(process.StandardOutput.ReadToEnd());
+                    }
                 }
+                catch { }
             }
-            catch { }
             IsADInstalled = strBui.ToString().Length != 0;
         }
 

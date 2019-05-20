@@ -3,6 +3,9 @@ using System.Windows.Forms;
 
 namespace PowerShellUI1
 {
+    /// <summary>
+    /// <code>ChoiceForm</code>s are the hub of the app.
+    /// </summary>
     public partial class ChoiceForm : Form
     {
         #region Variables
@@ -24,7 +27,7 @@ namespace PowerShellUI1
         #endregion
 
         /// <summary>
-        /// <code>ChoiceForm</code>s are the hub of the app.
+        /// Creates a new ChoiceForm.
         /// </summary>
         public ChoiceForm()
         {
@@ -32,7 +35,9 @@ namespace PowerShellUI1
 
             InstallForm.UpdateIsADInstalled();
             if (!InstallForm.IsADInstalled)
+            {
                 MessageBox.Show("Le module AD n'est pas installé. L'application ne peut pas fonctionner sans.");
+            }
 
             // Get the current path
             Path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
@@ -55,7 +60,10 @@ namespace PowerShellUI1
         private void OpenRetreiveForm(object sender, EventArgs e)
         {
             if (retreiveData == null || retreiveData.IsDisposed)
+            {
                 retreiveData = new RetreiveForm(Path);
+            }
+
             retreiveData.Show();
         }
 
@@ -67,7 +75,10 @@ namespace PowerShellUI1
         private void OpenPwdForm_Click(object sender, EventArgs e)
         {
             if (changePassword == null || changePassword.IsDisposed)
+            {
                 changePassword = new ChangePasswordForm(Path);
+            }
+
             changePassword.Show();
         }
 
@@ -79,7 +90,10 @@ namespace PowerShellUI1
         private void OpenInstallADForm_Click(object sender, EventArgs e)
         {
             if (installAD == null || installAD.IsDisposed)
+            {
                 installAD = new InstallForm(Path);
+            }
+
             installAD.FormClosed += new FormClosedEventHandler(UpdateEnabledButtons);
             installAD.Show();
         }

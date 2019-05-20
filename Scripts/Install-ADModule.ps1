@@ -75,7 +75,7 @@ Function Install-ADModule {
     Write-Verbose "---Updating help for ActiveDirectory"
     $isVerbose = $false
     If ($PSBoundParameters.ContainsKey('Verbose')) {
-        $isVerbose = $PsBoundParameters.Get_Item('Verbose')
+        $isVerbose = $PSBoundParameters.Get_Item('Verbose')
     }
     Update-Help -Module ActiveDirectory -Verbose:$isVerbose -Force
 

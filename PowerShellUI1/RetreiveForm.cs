@@ -7,7 +7,9 @@ using System.Collections.ObjectModel;
 
 namespace PowerShellUI1
 {
-
+    /// <summary>
+    /// <code>RetreiveForm</code> is for obtaining informations about an user or computer.
+    /// </summary>
     public partial class RetreiveForm : Form
     {
         #region variables
@@ -125,7 +127,8 @@ namespace PowerShellUI1
         {
             statusLabel.Visible = false;
             psText = "";
-            string userPart = searchTextBox.Text, selected, scriptName, scriptContent;
+            string userPart = searchTextBox.Text,
+                selected, scriptName, scriptContent;
             if (userPart.Equals(""))
             {
                 if (Array.IndexOf(new object[] { multipleCheckBox, userRButton, computerRButton }, sender) != -1)
@@ -138,13 +141,11 @@ namespace PowerShellUI1
                 return;
             }
 
-            // Create a new powershell
-            PowerShell ps = PowerShell.Create();
             scriptName = userScript;
-            string currentPath = path + scriptSubfolder + scriptName;
             // Read script
             try
             {
+                string currentPath = path + scriptSubfolder + scriptName;
                 using (StreamReader strReader = new StreamReader(currentPath))
                 {
                     scriptContent = strReader.ReadToEnd();
@@ -190,6 +191,9 @@ namespace PowerShellUI1
                 // Show the results in their own window
                 scriptContent = scriptContent.Replace("Out-String", "Out-Gridview -Title 'Informations sur les " + selected + "s'");
             }
+
+            // Create a new powershell
+            PowerShell ps = PowerShell.Create();
             // Launch script
             ps.AddScript(scriptContent);
             try
@@ -244,7 +248,7 @@ namespace PowerShellUI1
                 multipleCheckBox.Enabled = true;
                 // Split the entries into an array of entries
                 psTexts = psText.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var selectedUser = whichNumberUD.Value;
+                decimal selectedUser = whichNumberUD.Value;
                 ifMultipleLabel.Text = chooseItemText[0] + psTexts.Length + " " + selected + chooseItemText[1];
                 // The user selected something in the list
                 if (psTexts.Length >= selectedUser)
@@ -297,7 +301,7 @@ namespace PowerShellUI1
         private string GetItem()
         {
             // Load the prepared text
-            var resultTexts = GetResultText();
+            Dictionary<string, string> resultTexts = GetResultText();
             string resultText = "";
             // Verify which options are checked
             if (CheckOptions())
@@ -318,7 +322,9 @@ namespace PowerShellUI1
                     foreach (KeyValuePair<string, string> entry in convert)
                     {
                         if (resultTexts.ContainsKey(entry.Value))
+                        {
                             resultText += resultTexts[entry.Value];
+                        }
                     }
                 }
             }
@@ -482,7 +488,7 @@ namespace PowerShellUI1
                 optionsListBox.Items.Clear();
                 filterList.Items.Clear();
                 // Adds the new options
-                foreach (var item in currentList)
+                foreach (string item in currentList)
                 {
                     optionsListBox.Items.Add(item);
                     filterList.Items.Add(item);
@@ -574,7 +580,8 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void SubmitOnEnter(object sender, KeyEventArgs e)
         {
-            switch(e.KeyCode) {
+            switch (e.KeyCode)
+            {
                 // Press enter for input
                 case Keys.Enter:
                     RetreiveData(sender, null);
