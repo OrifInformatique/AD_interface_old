@@ -13,6 +13,7 @@ namespace PowerShellUI1
         private ChangePasswordForm changePassword;
         private InstallForm installAD;
 
+        #region Static
         /// <summary>
         /// The subfolder containing all scripts.
         /// </summary>
@@ -21,6 +22,7 @@ namespace PowerShellUI1
         /// Path to AD_interface folder.
         /// </summary>
         public static string Path { get; private set; }
+        #endregion
         #endregion
 
         /// <summary>

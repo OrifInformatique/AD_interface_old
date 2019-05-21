@@ -187,7 +187,11 @@ namespace PowerShellUI1
         {
             string scriptContent = "",
                 // Load the user input
-                userPart = searchTextBox.Text,
+                userPart = searchTextBox.Text
+                    // User can't use the escape character
+                    .Replace("`", "``")
+                    // User also can't call a variable
+                    .Replace("$", "`$"),
                 filterSelection = convert[(filterList.SelectedItem as string).ToLower()];
 
             try
