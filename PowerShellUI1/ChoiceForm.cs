@@ -4,13 +4,11 @@ using System.Windows.Forms;
 namespace PowerShellUI1
 {
     /// <summary>
-    /// <code>ChoiceForm</code>s are the hub of the app.
+    /// <code>ChoiceForm</code> serves as the hub of the app.
     /// </summary>
     public partial class ChoiceForm : Form
     {
         #region Variables
-        private const string scriptSubfolder = "\\Scripts\\";
-
         private RetreiveForm retreiveData;
         private ChangePasswordForm changePassword;
         private InstallForm installAD;
@@ -18,8 +16,7 @@ namespace PowerShellUI1
         /// <summary>
         /// The subfolder containing all scripts.
         /// </summary>
-        public static string ScriptSubfolder => scriptSubfolder;
-
+        public static string ScriptSubfolder => "\\Scripts\\";
         /// <summary>
         /// Path to AD_interface folder.
         /// </summary>
@@ -36,7 +33,7 @@ namespace PowerShellUI1
             InstallForm.UpdateIsADInstalled();
             if (!InstallForm.IsADInstalled)
             {
-                MessageBox.Show("Le module AD n'est pas installé. L'application ne peut pas fonctionner sans.");
+                _ = MessageBox.Show("Le module AD n'est pas installé. L'application ne peut pas fonctionner sans.");
             }
 
             // Get the current path
@@ -48,7 +45,7 @@ namespace PowerShellUI1
                 Path = Path.Substring(0, index);
             }
 
-            UpdateEnabledButtons();
+            UpdateEnabledButtons(this, null);
         }
 
         #region Forms opening
@@ -89,12 +86,13 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void OpenInstallADForm_Click(object sender, EventArgs e)
         {
+            UpdateEnabledButtons(sender, null);
             if (installAD == null || installAD.IsDisposed)
             {
                 installAD = new InstallForm(Path);
+                installAD.FormClosed += new FormClosedEventHandler(UpdateEnabledButtons);
             }
 
-            installAD.FormClosed += new FormClosedEventHandler(UpdateEnabledButtons);
             installAD.Show();
         }
         #endregion
@@ -104,7 +102,7 @@ namespace PowerShellUI1
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UpdateEnabledButtons(object sender = null, FormClosedEventArgs e = null)
+        private void UpdateEnabledButtons(object sender, FormClosedEventArgs e)
         {
             bool b = InstallForm.IsADInstalled;
             openRetrieveFrom.Enabled = b;

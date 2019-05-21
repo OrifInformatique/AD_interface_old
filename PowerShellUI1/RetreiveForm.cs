@@ -12,19 +12,16 @@ namespace PowerShellUI1
     /// </summary>
     public partial class RetreiveForm : Form
     {
-        #region variables
+        #region Variables
+        #region readonly
         // Name of the folder containing the scripts
         readonly string scriptSubfolder = ChoiceForm.ScriptSubfolder,
-            // String that separates the multiple entries
-            entrySeparator = "――――――",
-            // Script that contains the logic behind the loading
-            userScript = "getUser.ps1",
             // Path to scripts
             path = ChoiceForm.Path;
         // Strings of text for the list of different items
-        readonly string[] chooseItemText = { "Il y a ", "s à choix." };
+        private readonly string[] chooseItemText = { "Il y a ", "s à choix." };
         // Translates between powershell filters and french
-        readonly Dictionary<string, string> convert = new Dictionary<string, string>() {
+        private readonly Dictionary<string, string> convert = new Dictionary<string, string>() {
             {"nom", "Surname"},
             {"prénom", "GivenName"},
             {"identifiant", "SamAccountName"},
@@ -38,7 +35,7 @@ namespace PowerShellUI1
             // Reverse of convert
             iconvert;
         // Options shared by all groups
-        readonly Collection<string> sharedOptions = new Collection<string>() {
+        private readonly Collection<string> sharedOptions = new Collection<string>() {
             "Nom Technique", "Actif", "Nom", "Identifiant", "SID"
         },
             // Options that only the users have
@@ -49,15 +46,23 @@ namespace PowerShellUI1
             computerOptions = new Collection<string>() { "Nom DNS" },
             // Current list of options for the user
             currentList = new Collection<string>();
+        #endregion
 
-        // Text retrieved from powershell
-        string psText;
-        // psText but cut where there are 2 new linews
-        string[] psTexts;
-        // Whether it's set on users or computers
-        bool isUser = true;
+        #region static
+        /// <summary>
+        /// String that separates the multiple entries.
+        /// </summary>
+        private static string EntrySeparator => "――――――";
+        /// <summary>
+        /// Script that contains the logic behind the loading.
+        /// </summary>
+        private static string UserScript => "getUser.ps1";
+        #endregion
+
+        // The item selected
+        private string selected = "utilisateur";
         // options for the user
-        Dictionary<string, bool> options;
+        private Dictionary<string, bool> options;
         #endregion
 
         #region Constructors
@@ -75,7 +80,6 @@ namespace PowerShellUI1
                 iconvert[entry.Value] = entry.Key;
             }
             UpdateCurrentList(userOptions);
-            UpdateOptionBoxes();
 
             // Get the current path
             if (path == null)
@@ -108,7 +112,6 @@ namespace PowerShellUI1
                 iconvert[entry.Value] = entry.Key;
             }
             UpdateCurrentList(userOptions);
-            UpdateOptionBoxes();
 
             // Get the current path
             this.path = path;
@@ -118,34 +121,79 @@ namespace PowerShellUI1
         }
         #endregion
 
+        #region Displays
         /// <summary>
-        /// Retreives data depending on user input.
+        /// Updates the resultTextBox's Text with the data.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RetreiveData(object sender, EventArgs e)
+        private void UpdateResultTextBox(object sender, EventArgs e)
         {
             statusLabel.Visible = false;
-            psText = "";
-            string userPart = searchTextBox.Text,
-                selected, scriptName, scriptContent;
-            if (userPart.Equals(""))
-            {
-                if (Array.IndexOf(new object[] { multipleCheckBox, userRButton, computerRButton }, sender) != -1)
-                {
-                    return;
-                }
-                // A user should be entered
-                statusLabel.Text = "Erreur: Aucune donnée entrée.";
-                statusLabel.Visible = true;
-                return;
-            }
-
-            scriptName = userScript;
-            // Read script
+            // Get script
+            string script = GetBaseScript(),
+                // Run script and get results
+                item;
             try
             {
-                string currentPath = path + scriptSubfolder + scriptName;
+                item = GetScriptResults(script);
+            }
+            catch
+            {
+                // Problem in script execution, tell the user
+                statusLabel.Visible = true;
+                statusLabel.Text = "Erreur dans l'execution du script";
+                return;
+            }
+            // Split script results into separate items
+            string[] items = item.Trim().Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            // Obtain ordered items
+            var dicts = GetResultTextsFromItems(items);
+            // Display items
+            resultTextBox.Text = GetItemsFromDict(dicts);
+        }
+
+        /// <summary>
+        /// Displays the informations in another window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DisplayWindowResult(object sender, EventArgs e)
+        {
+            statusLabel.Visible = false;
+            // Obtain script and modify it
+            string script = GetBaseScript().Replace("Out-String", "Out-Gridview -Title 'Informations sur les " + selected + "s'");
+            try
+            {
+                // Display window
+                _ = GetScriptResults(script);
+            }
+            catch
+            {
+                // Problem in script execution, tell the user
+                statusLabel.Visible = true;
+                statusLabel.Text = "Erreur dans l'execution du script";
+                return;
+            }
+        }
+        #endregion
+
+        #region Item-related functions
+        /// <summary>
+        /// Obtains the powershell script.
+        /// </summary>
+        /// <returns>The powershell script.</returns>
+        private string GetBaseScript()
+        {
+            string scriptContent = "",
+                // Load the user input
+                userPart = searchTextBox.Text,
+                filterSelection = convert[(filterList.SelectedItem as string).ToLower()];
+
+            try
+            {
+                // Read script file
+                string currentPath = path + scriptSubfolder + UserScript;
                 using (StreamReader strReader = new StreamReader(currentPath))
                 {
                     scriptContent = strReader.ReadToEnd();
@@ -154,299 +202,158 @@ namespace PowerShellUI1
             catch
             {
                 // Problem with the script, tell the user
-                statusLabel.Text = "Erreur: Fichier '" + scriptName + "' n'est pas dans /Scripts!";
+                statusLabel.Text = "Erreur: Le fichier '" + UserScript + "' n'est pas dans le dossier Scripts!";
                 statusLabel.Visible = true;
-                return;
+                return null;
             }
 
-            // Set the filter
-            if (isUser)
+            // Enabled is a special case, the script must be edited
+            if ((filterList.SelectedItem as string).ToLower().Equals("actif"))
             {
-                selected = "utilisateur";
+                scriptContent = scriptContent.Replace("-like", "-eq");
+                userPart = userPart.ToLower().Replace("oui", "True").Replace("non", "False");
             }
-            else
+            if (selected.Equals("ordinateur"))
             {
-                selected = "ordinateur";
+                // The user is looking for a computer, edit script
                 scriptContent = scriptContent.Replace("Get-ADUser", "Get-ADComputer");
             }
-            string filterSelection = "SamAccountName";
-            if (filterList.SelectedItem != null)
-            {
-                if (convert.ContainsKey((filterList.SelectedItem as string).ToLower()))
-                {
-                    filterSelection = convert[(filterList.SelectedItem as string).ToLower()];
-                }
-                if ((filterList.SelectedItem as string).ToLower().Equals("actif"))
-                {
-                    scriptContent = scriptContent.Replace("-like", "-eq");
-                    if (userPart.ToLower().Contains("oui") || userPart.ToLower().Contains("non"))
-                    {
-                        userPart = userPart.ToLower().Replace("oui", "True").Replace("non", "False");
-                    }
-                }
-            }
-            scriptContent = scriptContent.Replace("{part}", userPart).Replace("{FilterSelection}", filterSelection);
-            if (sender == ownWindowButton)
-            {
-                // Show the results in their own window
-                scriptContent = scriptContent.Replace("Out-String", "Out-Gridview -Title 'Informations sur les " + selected + "s'");
-            }
 
-            // Create a new powershell
-            PowerShell ps = PowerShell.Create();
-            // Launch script
-            ps.AddScript(scriptContent);
-            try
-            {
-                var results = ps.Invoke();
-                foreach (var result in results)
-                {
-                    psText += result;
-                }
-            }
-            catch
-            {
-                // Problem in reading the script, tell the user
-                statusLabel.Text = "Erreur: problème dans l'execution du script \"" + scriptName + "\".";
-                statusLabel.Visible = true;
-                return;
-            }
-            finally
-            {
-                ps.Dispose();
-            }
-
-            // In case nothing was returned from the script
-            if (psText.Equals(""))
-            {
-                if (sender == ownWindowButton)
-                {
-                    return;
-                }
-                statusLabel.Text = "Erreur: ";
-                if (filterList.SelectedItem != null)
-                {
-                    statusLabel.Text += filterList.SelectedItem as string;
-                }
-                else
-                {
-                    statusLabel.Text += selected;
-                }
-                statusLabel.Text += " \"" + userPart + "\" n'existe pas.";
-                statusLabel.Visible = true;
-                resultTextBox.Text = "";
-                return;
-            }
-            // Load only the text needed
-            psText = psText.Replace("=", " = ").Trim();
-            // Isolate the users
-            if (psText.IndexOf("\r\n\r\n") != -1)
-            {
-                // Ask the user to choose which item to show
-                ifMultipleLabel.Enabled = true;
-                whichNumberUD.Enabled = !multipleCheckBox.Checked;
-                multipleCheckBox.Enabled = true;
-                // Split the entries into an array of entries
-                psTexts = psText.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                decimal selectedUser = whichNumberUD.Value;
-                ifMultipleLabel.Text = chooseItemText[0] + psTexts.Length + " " + selected + chooseItemText[1];
-                // The user selected something in the list
-                if (psTexts.Length >= selectedUser)
-                {
-                    psText = psTexts[(int)selectedUser - 1];
-                }
-                else
-                {
-                    // The user selected an item that doesn't exist
-                    statusLabel.Text = "Danger: Il y a moins que " + selectedUser.ToString() + " " + selected + ".\n" +
-                        "Le premier " + selected + " a été sélectionné.";
-                    statusLabel.Visible = true;
-                    psText = psTexts[0];
-                }
-            }
-            else
-            {
-                // Disable choosing a specific item, there is only 1
-                psTexts = new string[] { psText };
-                ifMultipleLabel.Enabled = false;
-                whichNumberUD.Enabled = false;
-                multipleCheckBox.Enabled = false;
-                if (userRButton.Checked)
-                {
-                    ifMultipleLabel.Text = "S'il y a plusieurs utilisateurs, choisir le quel montrer";
-                }
-                else if (computerRButton.Checked)
-                {
-                    ifMultipleLabel.Text = "S'il y a plusieurs ordinateurs, choisir le quel montrer";
-                }
-            }
-
-            if (!multipleCheckBox.Checked || psTexts.Length == 1)
-            {
-                // Only 1 item selected, display it to the user
-                resultTextBox.Text = GetItem();
-            }
-            else
-            {
-                // The user wants to see all items
-                resultTextBox.Text = GetItems();
-            }
-        }
-
-        #region Item-related functions
-        /// <summary>
-        /// Converts psText into a string.
-        /// </summary>
-        /// <returns>A formatted string of the item.</returns>
-        private string GetItem()
-        {
-            // Load the prepared text
-            Dictionary<string, string> resultTexts = GetResultText();
-            string resultText = "";
-            // Verify which options are checked
-            if (CheckOptions())
-            {
-                foreach (KeyValuePair<string, bool> entry in options)
-                {
-                    if (entry.Value)
-                    {
-                        resultText += resultTexts[convert[entry.Key]];
-                    }
-                }
-            }
-            else
-            {
-                // If nothing was checked, just give all the data
-                if (resultText.Equals(""))
-                {
-                    foreach (KeyValuePair<string, string> entry in convert)
-                    {
-                        if (resultTexts.ContainsKey(entry.Value))
-                        {
-                            resultText += resultTexts[entry.Value];
-                        }
-                    }
-                }
-            }
-            // Return the result text
-            return resultText;
+            // Replace the placeholders with their values
+            return scriptContent.Replace("{part}", userPart).Replace("{FilterSelection}", filterSelection);
         }
 
         /// <summary>
-        /// Loads psTexts and converts every entry into a chunk of string.
-        /// Uses separator for making sure that you're not seeing everything glued
+        /// Obtains the output from a powershell script.
         /// </summary>
-        /// <returns>A formatted string with all the items</returns>
-        private string GetItems()
+        /// <param name="script">Powershell script to execute</param>
+        /// <returns>Output of the script</returns>
+        private string GetScriptResults(string script)
         {
-            // Load the prepared texts
-            var resultTexts = GetResultTexts();
-            string resultText = "";
-            // Verify which options are checked
-            if (CheckOptions())
+            string res = "";
+            // Create a new PowerShell, load the script, launch it and obtain the output
+            using (PowerShell ps = PowerShell.Create().AddScript(script))
             {
-                foreach (var texts in resultTexts)
+                // Get results from the PowerShell
+                Collection<PSObject> results = ps.Invoke();
+                foreach (PSObject result in results)
                 {
-                    foreach (KeyValuePair<string, bool> entry in options)
-                    {
-                        if (entry.Value)
-                        {
-                            resultText += texts[convert[entry.Key]];
-                        }
-                    }
-                    resultText += "\r\n" + entrySeparator + "\r\n\r\n";
+                    // Add the results to the return value
+                    res += result;
                 }
             }
-            else
+            return res;
+        }
+
+        /// <summary>
+        /// Prepares the text to write from an array of items.
+        /// </summary>
+        /// <param name="items">The items to prepare</param>
+        /// <returns>The prepared text</returns>
+        private string GetItemsFromDict(Dictionary<string, string>[] items)
+        {
+            switch (items.Length)
             {
-                // If nothing was checked, just give all the data
-                if (resultText.Equals(""))
+                // There is no item, return nothing
+                case 0:
+                    return "";
+                // Disable the components only if there is a single item
+                case 1:
+                    ifMultipleLabel.Enabled = false;
+                    whichNumberUD.Enabled = false;
+                    multipleCheckBox.Enabled = false;
+                    break;
+                default:
+                    ifMultipleLabel.Enabled = true;
+                    whichNumberUD.Enabled = !multipleCheckBox.Checked;
+                    multipleCheckBox.Enabled = true;
+                    break;
+            }
+            // Check which item has been selected
+            if (!multipleCheckBox.Checked)
+            {
+                int i = Convert.ToInt32(whichNumberUD.Value) - 1,
+                    j = (i > -1 && i < items.Length) ? i : 0;
+                items = new Dictionary<string, string>[] { items[j] };
+            }
+
+            string res = "";
+            // Whether all parts should be displayed
+            bool all = !CheckOptions();
+            foreach (Dictionary<string, string> item in items)
+            {
+                foreach (KeyValuePair<string, string> entry in convert)
                 {
-                    foreach (var texts in resultTexts)
+                    // Check if the dictionnary contains the entry's value
+                    if ((all || options[entry.Key]) && item.ContainsKey(entry.Value))
                     {
-                        foreach (KeyValuePair<string, string> entry in convert)
-                        {
-                            if (texts.ContainsKey(entry.Value))
-                                resultText += texts[entry.Value];
-                        }
-                        resultText += "\r\n" + entrySeparator + "\r\n\r\n";
+                        // Add the value to the returned value
+                        res += item[entry.Value];
                     }
                 }
+                // Add line separators, because having it all glued it ugly
+                res += "\r\n" + EntrySeparator + "\r\n\r\n";
             }
-            // Remove last separator and trim
-            resultText = resultText.Substring(0, resultText.LastIndexOf(entrySeparator)).Trim();
-            // Return the result text
-            return resultText;
+
+            // Remove last separator before returning the value
+            return res.Substring(0, res.LastIndexOf(EntrySeparator)).Trim();
+        }
+
+        /// <summary>
+        /// Converts an array of items into a prepared array of items.
+        /// Mostly for processing purposes.
+        /// </summary>
+        /// <param name="items">The items to prepare</param>
+        /// <returns>The prepared items</returns>
+        private Dictionary<string, string>[] GetResultTextsFromItems(string[] items)
+        {
+            // Prepare an array of dictionaries
+            Dictionary<string, string>[] res = new Dictionary<string, string>[items.Length];
+
+            // Get which item we are at in the array
+            int index = 0;
+            foreach (string item in items)
+            {
+                // Prepare a dictionary
+                Dictionary<string, string> itemResult = new Dictionary<string, string>();
+
+                // Split string at the new line
+                foreach (string s in item.Split('\n'))
+                {
+                    // Split string at :
+                    string[] split = s.Split(':');
+                    // Get key (which item is gonna be grabbed at which point)
+                    string key = split[0].Trim(),
+                        // Get value (the item)
+                        value = "";
+                    // Check if there is a value
+                    if (split.Length > 1 && iconvert.ContainsKey(key))
+                    {
+                        // Add the translated key and :
+                        string k = iconvert[key] + " : ";
+                        // Make k start with an uppercase letter
+                        value += char.ToUpper(k[0]) + k.Substring(1) +
+                            // Get the other half of the pair and modify it for readability
+                            split[1]
+                            .Trim()
+                            .Replace(",", "\n\t")
+                            .Replace("True", "Oui")
+                            .Replace("False", "Non")
+                            .Replace("=", " = ") + "\n";
+                    }
+                    // Add key and value to dictionary
+                    itemResult.Add(key, value);
+                }
+                // Dictionary is complete, add it to the array and go to the next one
+                res[index] = itemResult;
+                index++;
+            }
+
+            return res;
         }
         #endregion
 
         #region Other functions
-        /// <summary>
-        /// Using psText, it makes a dictionary of all the content from "key : value"
-        /// </summary>
-        /// <returns>A ready to use dictionary for output text</returns>
-        private Dictionary<string, string> GetResultText()
-        {
-            // A dictionary for all results
-            Dictionary<string, string> res = new Dictionary<string, string>();
-            foreach (string s in psText.Split('\n'))
-            {
-                string[] split = s.Split(':');
-                string key = split[0].Trim();
-                string value = "";
-                // If there is something after the :
-                if(split.Length > 1 && iconvert.ContainsKey(key))
-                {
-                    string k = iconvert[key] + " : ";
-                    value += char.ToUpper(k[0]) + k.Substring(1)
-                        + split[1]
-                        .Trim()
-                        .Replace(",", "\n\t")
-                        .Replace("True", "Oui")
-                        .Replace("False", "Non") + "\n";
-                }
-                res.Add(key, value);
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Using psTexts, it makes an array of dictionaries that have all the content from "key : value"
-        /// </summary>
-        /// <returns>A ready to use array of dictionaries for output text</returns>
-        private Dictionary<string, string>[] GetResultTexts()
-        {
-            // Array of dictionaries for all results
-            Dictionary<string, string>[] res = new Dictionary<string, string>[psTexts.Length];
-            // Load dictionary array with a dictionary
-            foreach (string text in psTexts)
-            {
-                // A dictionary for current result
-                Dictionary<string, string> result = new Dictionary<string, string>();
-                // Current index in psTexts
-                int index = Array.FindIndex(psTexts, row => row.Equals(text));
-                foreach (string s in text.Split('\n'))
-                {
-                    string[] split = s.Split(':');
-                    string key = split[0].Trim();
-                    string value = "";
-                    if (split.Length > 1 && iconvert.ContainsKey(key))
-                    {
-                        string k = iconvert[key] + " : ";
-                        value += char.ToUpper(k[0]) + k.Substring(1);
-                        value += split[1]
-                            .Trim()
-                            .Replace(",", "\n\t")
-                            .Replace("True", "Oui")
-                            .Replace("False", "Non") + "\n";
-                    }
-                    result.Add(key, value);
-                }
-                res[index] = result;
-            }
-            return res;
-        }
-
         /// <summary>
         /// Checks all the options and updates the option dictionary
         /// </summary>
@@ -515,62 +422,62 @@ namespace PowerShellUI1
             {
                 currentList.Add(s);
             }
+            UpdateOptionBoxes();
+        }
+
+        /// <summary>
+        /// Updates the form's componenents' text depending on what is selected.
+        /// </summary>
+        /// <returns>Which item is selected.</returns>
+        private void UpdateSelected()
+        {
+            ifMultipleLabel.Text = "S'il y a plusieurs " + selected + "s, choisir le quel montrer";
+            getItemButton.Text = "Obtenir les informations de l'" + selected;
         }
         #endregion
 
         #region Events
         /// <summary>
+        /// Updates <code>isUser</code>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SwitchSelected(object sender, EventArgs e)
+        {
+            // Checks which button was checked
+            if (sender.Equals(computerRButton))
+            {
+                // It's now an user
+                selected = "utilisateur";
+                // Unchecks other button
+                computerRButton.Checked = false;
+                UpdateSelected();
+                UpdateCurrentList(userOptions);
+                UpdateResultTextBox(sender, null);
+            }
+            else if (sender.Equals(userRButton))
+            {
+                // It's not an user
+                selected = "ordinateur";
+                // Unchecks other button
+                userRButton.Checked = false;
+                UpdateSelected();
+                UpdateCurrentList(computerOptions);
+                UpdateResultTextBox(sender, null);
+            }
+        }
+
+        /// <summary>
         /// Calls <code>RetreiveData</code>.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MultipleCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void ReloadItems(object sender, EventArgs e)
         {
             // Reloads the data shown
-            RetreiveData(sender, null);
+            UpdateResultTextBox(sender, null);
             // Removes an ugly scrollbar that isn't even working
             resultTextBox.Refresh();
-        }
-
-        /// <summary>
-        /// Updates <code>isUser</code>.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void UserRButton_CheckedChanged(object sender, EventArgs e)
-        {
-            // Checks that button was checked
-            if (userRButton.Checked)
-            {
-                // It's now an user
-                isUser = true;
-                getItemButton.Text = "Obtenir les informations de l'utilisateur";
-                // Unchecks other button
-                computerRButton.Checked = false;
-                UpdateCurrentList(userOptions);
-                UpdateOptionBoxes();
-                RetreiveData(sender, null);
-            }
-        }
-
-        /// <summary>
-        /// Updates <code>isUser</code>.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ComputerRButton_CheckedChanged(object sender, EventArgs e)
-        {
-            if (computerRButton.Checked)
-            {
-                // It's not an user
-                isUser = false;
-                getItemButton.Text = "Obtenir les informations de l'ordinateur";
-                // Unchecks other button
-                userRButton.Checked = false;
-                UpdateCurrentList(computerOptions);
-                UpdateOptionBoxes();
-                RetreiveData(sender, null);
-            }
         }
 
         /// <summary>
@@ -582,9 +489,9 @@ namespace PowerShellUI1
         {
             switch (e.KeyCode)
             {
-                // Press enter for input
                 case Keys.Enter:
-                    RetreiveData(sender, null);
+                    UpdateResultTextBox(sender, null);
+                    // One of these prevents the error sound when you press enter
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;

@@ -11,8 +11,6 @@ Does the following tasks:
 Requires Windows 10.
 Requires an elevated host.
 Requires an internet connection.
-
-I have no idea if this works.
 #>
 Function Install-ADModule {
     [CmdletBinding()]
@@ -78,7 +76,7 @@ Function Install-ADModule {
         $isVerbose = $PSBoundParameters.Get_Item('Verbose')
     }
     Update-Help -Module ActiveDirectory -Verbose:$isVerbose -Force
-
+    Write-Verbose "---ActiveDirectory help updated"
 }
 
 # Launch function

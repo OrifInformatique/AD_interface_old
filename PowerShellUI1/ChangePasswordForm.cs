@@ -12,9 +12,15 @@ namespace PowerShellUI1
     /// </summary>
     public partial class ChangePasswordForm : Form
     {
+        #region Variables
         private readonly string path = ChoiceForm.Path,
-            scriptSubfolder = ChoiceForm.ScriptSubfolder,
-            passwordScript = "ChangeUserPassword.ps1";
+            scriptSubfolder = ChoiceForm.ScriptSubfolder;
+
+        /// <summary>
+        /// The name of the script.
+        /// </summary>
+        private static string PasswordScript => "ChangeUserPassword.ps1";
+        #endregion
 
         #region Constructors
         /// <summary>
@@ -60,8 +66,7 @@ namespace PowerShellUI1
             string username = usernameTextBox.Text,
                 password = newPasswordTextBox.Text,
                 passwordAgain = newPasswordAgainTextBox.Text,
-                scriptContent,
-                currentPath;
+                scriptContent, currentPath;
 
             // Is the password empty
             if (password.Equals("") || newPasswordTextBox.Equals("") || currentUserPasswordTextBox.Text.Equals(""))
@@ -70,7 +75,7 @@ namespace PowerShellUI1
                 errorLabel.Text = "Entrez un mot de passe!";
                 return;
             }
-            // Is there a username provided
+            // Is there an username provided
             else if (username.Equals("") || currentUserTextBox.Text.Equals(""))
             {
                 errorLabel.Visible = true;
@@ -88,7 +93,7 @@ namespace PowerShellUI1
             // Create a new powershell
             PowerShell ps = PowerShell.Create();
             int minPasswordLength = 6;
-            ps.AddScript("(Get-ADDefaultDomainPasswordPolicy).MinPasswordLength");
+            _ = ps.AddScript("(Get-ADDefaultDomainPasswordPolicy).MinPasswordLength");
             try
             {
                 Collection<PSObject> results = ps.Invoke();
@@ -121,7 +126,7 @@ namespace PowerShellUI1
             try
             {
                 // Prepare script path
-                currentPath = path + scriptSubfolder + passwordScript;
+                currentPath = path + scriptSubfolder + PasswordScript;
                 // Read script
                 using (StreamReader strReader = new StreamReader(currentPath))
                 {
@@ -132,7 +137,7 @@ namespace PowerShellUI1
             {
                 // Problem with the script, tell the user
                 errorLabel.Visible = true;
-                errorLabel.Text = "Erreur: Fichier '" + passwordScript + "' n'est pas dans /Scripts!";
+                errorLabel.Text = "Erreur: Le fichier '" + PasswordScript + "' n'est pas dans /Scripts!";
                 return;
             }
 

@@ -51,7 +51,7 @@
             this.getItemButton.TabIndex = 1;
             this.getItemButton.Text = "Obtenir les informations de l\'utilisateur";
             this.getItemButton.UseVisualStyleBackColor = true;
-            this.getItemButton.Click += new System.EventHandler(this.RetreiveData);
+            this.getItemButton.Click += new System.EventHandler(this.UpdateResultTextBox);
             // 
             // searchTextBox
             // 
@@ -150,7 +150,7 @@
             0,
             0,
             0});
-            this.whichNumberUD.ValueChanged += new System.EventHandler(this.RetreiveData);
+            this.whichNumberUD.ValueChanged += new System.EventHandler(this.UpdateResultTextBox);
             this.whichNumberUD.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // multipleCheckBox
@@ -162,7 +162,7 @@
             this.multipleCheckBox.TabIndex = 4;
             this.multipleCheckBox.Text = "Voir le tout";
             this.multipleCheckBox.UseVisualStyleBackColor = true;
-            this.multipleCheckBox.CheckedChanged += new System.EventHandler(this.MultipleCheckBox_CheckedChanged);
+            this.multipleCheckBox.CheckedChanged += new System.EventHandler(this.ReloadItems);
             this.multipleCheckBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SubmitOnEnter);
             // 
             // userRButton
@@ -175,7 +175,7 @@
             this.userRButton.TabStop = true;
             this.userRButton.Text = "Utilisateurs";
             this.userRButton.UseVisualStyleBackColor = true;
-            this.userRButton.CheckedChanged += new System.EventHandler(this.UserRButton_CheckedChanged);
+            this.userRButton.CheckedChanged += new System.EventHandler(this.SwitchSelected);
             // 
             // computerRButton
             // 
@@ -185,7 +185,7 @@
             this.computerRButton.TabIndex = 8;
             this.computerRButton.Text = "Ordinateurs";
             this.computerRButton.UseVisualStyleBackColor = true;
-            this.computerRButton.CheckedChanged += new System.EventHandler(this.ComputerRButton_CheckedChanged);
+            this.computerRButton.CheckedChanged += new System.EventHandler(this.SwitchSelected);
             // 
             // ownWindowButton
             // 
@@ -195,7 +195,7 @@
             this.ownWindowButton.TabIndex = 2;
             this.ownWindowButton.Text = "Montrer les informations sur une autre fenêtre";
             this.ownWindowButton.UseVisualStyleBackColor = true;
-            this.ownWindowButton.Click += new System.EventHandler(this.RetreiveData);
+            this.ownWindowButton.Click += new System.EventHandler(this.DisplayWindowResult);
             // 
             // RetreiveForm
             // 

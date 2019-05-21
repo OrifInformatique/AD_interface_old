@@ -10,14 +10,19 @@ namespace PowerShellUI1
     /// </summary>
     public partial class InstallForm : Form
     {
-        readonly string path = ChoiceForm.Path,
-            scriptSubfolder = ChoiceForm.ScriptSubfolder,
-            installScript = "Install-ADModule.ps1";
+        #region Variables
+        private readonly string path = ChoiceForm.Path,
+            scriptSubfolder = ChoiceForm.ScriptSubfolder;
 
         /// <summary>
         /// Whether or not the ActiveDirectory module is installed.
         /// </summary>
         public static bool IsADInstalled { get; private set; }
+        /// <summary>
+        /// The name of the installation script.
+        /// </summary>
+        private static string InstallScript => "Install-ADModule.ps1";
+        #endregion
 
         #region Constructors
         /// <summary>
@@ -90,14 +95,13 @@ namespace PowerShellUI1
                 {
                     FileName = "powershell.exe",
                     Verb = "runas",
-                    Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + installScript}",
+                    Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + InstallScript}",
                     CreateNoWindow = false
                 });
                 // Tell user that installation is in progress
                 statusLabel.Text = "Installation du module AD, veuillez patienter.\nÇa va prendre un moment.";
                 statusLabel.Visible = true;
-                while (!proc.HasExited) { };
-                statusLabel.Visible = false;
+                proc.Exited += ADInstallFinished;
             }
             catch
             {
@@ -106,7 +110,7 @@ namespace PowerShellUI1
             // Installation successful
             statusLabel.Visible = false;
             resultLabel.Visible = true;
-            resultLabel.Text = "Le module AD a été installé.";
+            resultLabel.Text = "Le module AD est en cours d'installation.";
 
             return true;
         }
@@ -163,6 +167,14 @@ namespace PowerShellUI1
                     e.SuppressKeyPress = true;
                     break;
             }
+        }
+
+        private void ADInstallFinished(object sender, System.EventArgs e)
+        {
+            statusLabel.Visible = false;
+            resultLabel.Text = "Le module AD a été installé.";
+            _ = MessageBox.Show("Le module AD a été installé.");
+            UpdateIsADInstalled();
         }
         #endregion
     }
