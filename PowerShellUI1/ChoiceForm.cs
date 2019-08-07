@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -41,11 +42,25 @@ namespace PowerShellUI1
 
             // Get the current path
             Path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-            // Go upward until in AD_interface  
+            // Go upward until in AD_interface
             while (!Directory.Exists(Path + ScriptSubfolder))
             {
                 int index = Path.LastIndexOf("\\");
                 Path = Path.Substring(0, index);
+                if (Path.EndsWith(":"))
+                { // Could not find \Scripts, exit application
+                    _ = MessageBox.Show("Le dossier \\Scripts n'a pas été trouvé dans le dossier du l'application ou un dossier parent.");
+                    if (Application.MessageLoop)
+                    {
+                        // WinForms app
+                        Application.Exit();
+                    }
+                    else
+                    {
+                        // Console app
+                        Environment.Exit(1);
+                    }
+                }
             }
 
             UpdateEnabledButtons(this, null);
