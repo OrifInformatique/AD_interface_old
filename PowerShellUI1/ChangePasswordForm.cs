@@ -15,6 +15,8 @@ namespace PowerShellUI1
         #region Variables
         private readonly string path = ChoiceForm.Path,
             scriptSubfolder = ChoiceForm.ScriptSubfolder;
+        // Tooltip object
+        private readonly ToolTip tooltip = new ToolTip();
 
         /// <summary>
         /// The name of the script.
@@ -39,6 +41,7 @@ namespace PowerShellUI1
                     path = path.Substring(0, index);
                 }
             }
+            SetToolTips();
         }
 
         /// <summary>
@@ -49,6 +52,7 @@ namespace PowerShellUI1
         {
             InitializeComponent();
             this.path = path;
+            SetToolTips();
         }
         #endregion
 
@@ -69,7 +73,7 @@ namespace PowerShellUI1
                 scriptContent, currentPath;
 
             // Is the password empty
-            if (password.Equals("") || newPasswordTextBox.Equals("") || currentUserPasswordTextBox.Text.Equals(""))
+            if (password.Equals("") || passwordAgain.Equals("") || currentUserPasswordTextBox.Text.Equals(""))
             {
                 errorLabel.Visible = true;
                 errorLabel.Text = "Entrez un mot de passe!";
@@ -169,6 +173,18 @@ namespace PowerShellUI1
             {
                 ps.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Creates tooltips for different textboxes
+        /// </summary>
+        private void SetToolTips()
+        {
+            tooltip.SetToolTip(usernameLabel, "Le nom de l'utilisateur qui a besoin d'un nouveau mot de passe");
+            tooltip.SetToolTip(passwordLabel, "Le nouveau mot de passe de l'utilisateur");
+            tooltip.SetToolTip(passwordAgainLabel, "Le nouveau mot de passe de l'utilisateur répété");
+            tooltip.SetToolTip(currentUserLabel, "Un nom d'utilisateur qui a accès à l'AD");
+            tooltip.SetToolTip(currentUserPasswordLabel, "Le mot de passe de l'utilisateur");
         }
 
         #region Events

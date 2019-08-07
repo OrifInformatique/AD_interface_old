@@ -18,8 +18,6 @@ namespace PowerShellUI1
         readonly string scriptSubfolder = ChoiceForm.ScriptSubfolder,
             // Path to scripts
             path = ChoiceForm.Path;
-        // Strings of text for the list of different items
-        private readonly string[] chooseItemText = { "Il y a ", "s à choix." };
         // Translates between powershell filters and french
         private readonly Dictionary<string, string> convert = new Dictionary<string, string>() {
             {"nom", "Surname"},
@@ -46,6 +44,8 @@ namespace PowerShellUI1
             computerOptions = new Collection<string>() { "Nom DNS" },
             // Current list of options for the user
             currentList = new Collection<string>();
+        // Tooltip object
+        private readonly ToolTip tooltip = new ToolTip();
         #endregion
 
         #region static
@@ -72,7 +72,8 @@ namespace PowerShellUI1
         public RetreiveForm()
         {
             InitializeComponent();
-            this.CenterToScreen();
+            CenterToScreen();
+            SetToolTips();
             iconvert = new Dictionary<string, string>();
             // Reverse convert dictionary
             foreach (KeyValuePair<string, string> entry in convert)
@@ -104,7 +105,8 @@ namespace PowerShellUI1
         public RetreiveForm(string path)
         {
             InitializeComponent();
-            this.CenterToScreen();
+            CenterToScreen();
+            SetToolTips();
             iconvert = new Dictionary<string, string>();
             // Reverse convert dictionary
             foreach (KeyValuePair<string, string> entry in convert)
@@ -260,6 +262,11 @@ namespace PowerShellUI1
             {
                 // There is no item, return nothing
                 case 0:
+                    if(searchTextBox.Text.Length > 0)
+                    {
+                        statusLabel.Visible = true;
+                        statusLabel.Text = "Aucun " + selected + " n'est appelé " + searchTextBox.Text;
+                    }
                     return "";
                 // Disable the components only if there is a single item
                 case 1:
@@ -295,7 +302,7 @@ namespace PowerShellUI1
                         res += item[entry.Value];
                     }
                 }
-                // Add line separators, because having it all glued it ugly
+                // Add line separators, because having it all glued is ugly
                 res += "\r\n" + EntrySeparator + "\r\n\r\n";
             }
 
@@ -422,9 +429,12 @@ namespace PowerShellUI1
                 currentList.Add(s);
             }
             // Adds all entries in the secondary list
-            foreach(string s in otherlist)
+            if (otherlist != null)
             {
-                currentList.Add(s);
+                foreach (string s in otherlist)
+                {
+                    currentList.Add(s);
+                }
             }
             UpdateOptionBoxes();
         }
@@ -438,6 +448,18 @@ namespace PowerShellUI1
             ifMultipleLabel.Text = "S'il y a plusieurs " + selected + "s, choisir le quel montrer";
             getItemButton.Text = "Obtenir les informations de l'" + selected;
         }
+
+        /// <summary>
+        /// Sets the tooltips for different inputs/outputs
+        /// </summary>
+        private void SetToolTips()
+        {
+            tooltip.SetToolTip(optionsListBox, "Sélection de ce qu'il faut afficher");
+            tooltip.SetToolTip(filterList, "Sélection de ce qui est recherché");
+            tooltip.SetToolTip(userRButton, "Chercher parmis les utilisateurs");
+            tooltip.SetToolTip(computerRButton, "Chercher parmis les ordinateurs");
+            tooltip.SetToolTip(searchTextBox, "Critère(s) de recherche");
+        }
         #endregion
 
         #region Events
@@ -448,27 +470,27 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void SwitchSelected(object sender, EventArgs e)
         {
+            Collection<string> displayOptions = null;
             // Checks which button was checked
-            if (sender.Equals(computerRButton))
+            if (sender.Equals(userRButton) && userRButton.Checked)
             {
                 // It's now an user
                 selected = "utilisateur";
                 // Unchecks other button
                 computerRButton.Checked = false;
-                UpdateSelected();
-                UpdateCurrentList(userOptions);
-                UpdateResultTextBox(sender, null);
+                displayOptions = userOptions;
             }
-            else if (sender.Equals(userRButton))
+            else if (sender.Equals(computerRButton) && computerRButton.Checked)
             {
                 // It's not an user
                 selected = "ordinateur";
                 // Unchecks other button
                 userRButton.Checked = false;
-                UpdateSelected();
-                UpdateCurrentList(computerOptions);
-                UpdateResultTextBox(sender, null);
+                displayOptions = computerOptions;
             }
+            UpdateSelected();
+            UpdateCurrentList(displayOptions);
+            UpdateResultTextBox(sender, null);
         }
 
         /// <summary>
