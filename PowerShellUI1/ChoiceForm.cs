@@ -24,6 +24,11 @@ namespace PowerShellUI1
         /// Path to AD_interface folder.
         /// </summary>
         public static string Path { get; private set; }
+
+        /// <summary>
+        /// The subfolder containing all images.
+        /// </summary>
+        public static string ImagesSubFolder => "\\Images\\";
         #endregion
         #endregion
 

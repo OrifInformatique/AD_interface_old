@@ -19,22 +19,22 @@ Function Install-ADModule {
     # Script needs internet
     If (!(Test-Connection 8.8.8.8 -Quiet)) {
         #throw [System.Exception] "Internet is required for installation"
-        Write-Warning "Internet is required for installation!"
+        Write-Warning "Internet est requis pour l'installation!"
         break
     }
 
     # Script only works in Windows 10, make sure it it the current OS
     If ((Get-CimInstance Win32_OperatingSystem).Caption -notlike "*Windows 10*") {
         #throw [System.Exception] "OS must be Windows 10"
-        Write-Warning 'OS must be Windows 10!'
+        Write-Warning "Le système d'exploitation doit être Windows 10!"
         break
     }
 
     # Checks that RSAT is not installed, otherwise install it
     If (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue) {
-        Write-Verbose "---RSAT already installed"
+        Write-Verbose "---Module AD déjà installé"
     } Else {
-        Write-Verbose "---Downloading RSAT"
+        Write-Verbose "---Téléchargement du module AD"
 
         # Checks the architecture and selects the correct version of RSAT
         If ((Get-CimInstance Win32_ComputerSystem).SystemType -like "x64*") {
@@ -42,8 +42,6 @@ Function Install-ADModule {
         } Else {
             $dl = 'WindowsTH-KB2693643-x86.msu'
         }
-
-        Write-Verbose "---Download finished"
 
         # Downloads the RSAT
         $BaseURL = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/'
@@ -53,30 +51,32 @@ Function Install-ADModule {
         $WebClient.DownloadFile($URL,$Destination)
         $WebClient.Dispose()
 
+        Write-Verbose "---Téléchargement terminé"
+
         # Installs the RSAT
-        Write-Verbose '---Installing RSAT'
+        Write-Verbose '---Installation du module AD'
         wusa.exe $Destination /quiet /norestart /log:$home\Documents\RSAT.log
 
         # Until done installing, keep writing dots
-        Write-Host "Installing" -NoNewLine
+        Write-Host "Installation en cours" -NoNewLine
         do {
             Write-Host "." -NoNewLine
             Start-Sleep -Seconds 5
         } until (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue)
         Write-Host "."
-        Write-Verbose "---Installation finished"
+        Write-Verbose "---Installation terminée"
     }
 
     # Since enabling the RSAT was not working in the original, there is no reason to keep it
 
     # Download / Update the help for ActiveDirectory
-    Write-Verbose "---Updating help for ActiveDirectory"
+    Write-Verbose "---Rafraichissement de l'aide pour le module AD"
     $isVerbose = $false
     If ($PSBoundParameters.ContainsKey('Verbose')) {
         $isVerbose = $PSBoundParameters.Get_Item('Verbose')
     }
     Update-Help -Module ActiveDirectory -Verbose:$isVerbose -Force
-    Write-Verbose "---ActiveDirectory help updated"
+    Write-Verbose "---Rafraichissement terminé"
 }
 
 # Launch function
