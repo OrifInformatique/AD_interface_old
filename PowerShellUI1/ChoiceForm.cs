@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -24,11 +23,6 @@ namespace PowerShellUI1
         /// Path to AD_interface folder.
         /// </summary>
         public static string Path { get; private set; }
-
-        /// <summary>
-        /// The subfolder containing all images.
-        /// </summary>
-        public static string ImagesSubFolder => "\\Images\\";
         #endregion
         #endregion
 
@@ -109,13 +103,16 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void OpenInstallADForm_Click(object sender, EventArgs e)
         {
-            UpdateEnabledButtons(sender, null);
             if (installAD == null || installAD.IsDisposed)
             {
                 installAD = new InstallForm(Path);
                 installAD.FormClosed += new FormClosedEventHandler(UpdateEnabledButtons);
             }
-
+            if (!InstallForm.IsADInstalled)
+            {
+                InstallForm.UpdateIsADInstalled();
+                UpdateEnabledButtons(sender, null);
+            }
             installAD.Show();
         }
         #endregion

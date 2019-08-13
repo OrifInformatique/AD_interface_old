@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -15,8 +13,7 @@ namespace PowerShellUI1
     {
         #region Variables
         private readonly string path = ChoiceForm.Path,
-            scriptSubfolder = ChoiceForm.ScriptSubfolder,
-            imagesSubfolder = ChoiceForm.ImagesSubFolder;
+            scriptSubfolder = ChoiceForm.ScriptSubfolder;
 
         /// <summary>
         /// Whether or not the ActiveDirectory module is installed.
@@ -27,10 +24,10 @@ namespace PowerShellUI1
         /// </summary>
         private static string InstallScript => "Install-ADModule.ps1";
 
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
-
-        private readonly int SW_HIDE = 0;
+        /// <summary>
+        /// Whether or not the AD module is being installed
+        /// </summary>
+        private static bool IsAdInstalling = false;
         #endregion
 
         #region Constructors
@@ -51,6 +48,19 @@ namespace PowerShellUI1
                     path = path.Substring(0, index);
                 }
             }
+            installBtn.Enabled = !(IsADInstalled || IsAdInstalling);
+            if (IsADInstalled)
+            {
+                resultLabel.Visible = true;
+                resultLabel.Text = "Le module AD est déjà installé";
+                return;
+            }
+            else if (IsAdInstalling)
+            {
+                statusLabel.Visible = true;
+                statusLabel.Text = "Le module AD est en cours d'installation";
+                return;
+            }
         }
 
         /// <summary>
@@ -61,6 +71,19 @@ namespace PowerShellUI1
         {
             InitializeComponent();
             this.path = path;
+            installBtn.Enabled = !(IsADInstalled || IsAdInstalling);
+            if (IsADInstalled)
+            {
+                resultLabel.Visible = true;
+                resultLabel.Text = "Le module AD est déjà installé";
+                return;
+            }
+            else if (IsAdInstalling)
+            {
+                statusLabel.Visible = true;
+                statusLabel.Text = "Le module AD est en cours d'installation";
+                return;
+            }
         }
         #endregion
 
@@ -77,6 +100,12 @@ namespace PowerShellUI1
             {
                 resultLabel.Visible = true;
                 resultLabel.Text = "Le module AD est déjà installé";
+                return;
+            }
+            else if (IsAdInstalling)
+            {
+                statusLabel.Visible = true;
+                statusLabel.Text = "Le module AD est en cours d'installation";
                 return;
             }
             else
@@ -99,27 +128,25 @@ namespace PowerShellUI1
         {
             try
             {
+                // Tell user that installation is in progress
+                IsAdInstalling = true;
                 installBtn.Enabled = false;
                 statusLabel.Text = "Installation du module AD, veuillez patienter.\nÇa va prendre un moment.";
-                Image i = Image.FromFile(path + imagesSubfolder + "Loading.gif");
-                statusLabel.BackgroundImage = i;
                 statusLabel.Visible = true;
                 // Load a new powershell
                 Process proc = Process.Start(new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
                     Verb = "runas",
-                    Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + InstallScript}",
-                    CreateNoWindow = true,
-                    UseShellExecute = false
+                    Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + InstallScript}"
                 });
-                _ = ShowWindow(proc.MainWindowHandle, SW_HIDE);
-                // Tell user that installation is in progress
                 proc.Exited += ADInstallFinished;
+                proc.Disposed += ADInstallFinished;
             }
             catch
             {
-                statusLabel.Text = "L'installation du module AD n'a pas pus être installé";
+                IsAdInstalling = false;
+                statusLabel.Text = "L'installation du module AD n'a pas pus être commencée";
                 statusLabel.Visible = true;
                 installBtn.Enabled = true;
             }
@@ -159,6 +186,10 @@ namespace PowerShellUI1
                 catch { }
             }
             IsADInstalled = strBui.ToString().Length != 0;
+            if (IsADInstalled)
+            {
+                IsAdInstalling = false;
+            }
         }
 
         /// <summary>
@@ -186,7 +217,8 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void ADInstallFinished(object sender, object e)
         {
-            statusLabel.BackgroundImage = null;
+            IsAdInstalling = false;
+            installBtn.Enabled = true;
             statusLabel.Visible = false;
             resultLabel.Visible = true;
             resultLabel.Text = "Le module AD a été installé.";

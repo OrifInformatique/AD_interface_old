@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Management.Automation; // Enables PowerShell
-using System.IO;  // Enables Stream Reader
-using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;  // Enables Stream Reader
+using System.Management.Automation; // Enables PowerShell
+using System.Windows.Forms;
 
 namespace PowerShellUI1
 {
@@ -262,7 +262,7 @@ namespace PowerShellUI1
             {
                 // There is no item, return nothing
                 case 0:
-                    if(searchTextBox.Text.Length > 0)
+                    if (searchTextBox.Text.Length > 0)
                     {
                         statusLabel.Visible = true;
                         statusLabel.Text = "Aucun " + selected + " n'est appelé " + searchTextBox.Text;

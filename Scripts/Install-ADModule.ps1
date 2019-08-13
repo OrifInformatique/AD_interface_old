@@ -32,9 +32,9 @@ Function Install-ADModule {
 
     # Checks that RSAT is not installed, otherwise install it
     If (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue) {
-        Write-Verbose "---Module AD déjà installé"
+        Write-Host "---Module AD déjà installé"
     } Else {
-        Write-Verbose "---Téléchargement du module AD"
+        Write-Host "---Téléchargement du module AD"
 
         # Checks the architecture and selects the correct version of RSAT
         If ((Get-CimInstance Win32_ComputerSystem).SystemType -like "x64*") {
@@ -51,10 +51,10 @@ Function Install-ADModule {
         $WebClient.DownloadFile($URL,$Destination)
         $WebClient.Dispose()
 
-        Write-Verbose "---Téléchargement terminé"
+        Write-Host "---Téléchargement terminé"
 
         # Installs the RSAT
-        Write-Verbose '---Installation du module AD'
+        Write-Host '---Installation du module AD'
         wusa.exe $Destination /quiet /norestart /log:$home\Documents\RSAT.log
 
         # Until done installing, keep writing dots
@@ -64,7 +64,7 @@ Function Install-ADModule {
             Start-Sleep -Seconds 5
         } until (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue)
         Write-Host "."
-        Write-Verbose "---Installation terminée"
+        Write-Host "---Installation terminée"
     }
 
     # Since enabling the RSAT was not working in the original, there is no reason to keep it
@@ -77,7 +77,8 @@ Function Install-ADModule {
     }
     Update-Help -Module ActiveDirectory -Verbose:$isVerbose -Force
     Write-Verbose "---Rafraichissement terminé"
+	Stop-Process $PID -Force
 }
 
 # Launch function
-Install-ADModule -Verbose
+Install-ADModule
