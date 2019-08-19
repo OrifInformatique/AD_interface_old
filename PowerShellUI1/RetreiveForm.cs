@@ -50,10 +50,6 @@ namespace PowerShellUI1
 
         #region static
         /// <summary>
-        /// String that separates the multiple entries.
-        /// </summary>
-        private static string EntrySeparator => "――――――";
-        /// <summary>
         /// Script that contains the logic behind the loading.
         /// </summary>
         private static string UserScript => "getUser.ps1";
@@ -138,7 +134,7 @@ namespace PowerShellUI1
                 item;
             try
             {
-                item = GetScriptResults(script);
+                item = Utilities.GetScriptResults(script);
             }
             catch
             {
@@ -150,7 +146,7 @@ namespace PowerShellUI1
             // Split script results into separate items
             string[] items = item.Trim().Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             // Obtain ordered items
-            var dicts = GetResultTextsFromItems(items);
+            Dictionary<string, string>[] dicts = GetResultTextsFromItems(items);
             // Display items
             resultTextBox.Text = GetItemsFromDict(dicts);
         }
@@ -168,7 +164,7 @@ namespace PowerShellUI1
             try
             {
                 // Display window
-                _ = GetScriptResults(script);
+                _ = Utilities.GetScriptResults(script);
             }
             catch
             {
@@ -187,7 +183,7 @@ namespace PowerShellUI1
         /// <returns>The powershell script.</returns>
         private string GetBaseScript()
         {
-            string scriptContent = "",
+            string scriptContent = Utilities.GetFileContents(path + scriptSubfolder + UserScript),
                 // Load the user input
                 userPart = searchTextBox.Text
                     // User can't use the escape character
@@ -196,18 +192,8 @@ namespace PowerShellUI1
                     .Replace("$", "`$"),
                 filterSelection = convert[(filterList.SelectedItem as string).ToLower()];
 
-            try
+            if (scriptContent.Length == 0)
             {
-                // Read script file
-                string currentPath = path + scriptSubfolder + UserScript;
-                using (StreamReader strReader = new StreamReader(currentPath))
-                {
-                    scriptContent = strReader.ReadToEnd();
-                }
-            }
-            catch
-            {
-                // Problem with the script, tell the user
                 statusLabel.Text = "Erreur: Le fichier '" + UserScript + "' n'est pas dans le dossier Scripts!";
                 statusLabel.Visible = true;
                 return null;
@@ -227,28 +213,6 @@ namespace PowerShellUI1
 
             // Replace the placeholders with their values
             return scriptContent.Replace("{part}", userPart).Replace("{FilterSelection}", filterSelection);
-        }
-
-        /// <summary>
-        /// Obtains the output from a powershell script.
-        /// </summary>
-        /// <param name="script">Powershell script to execute</param>
-        /// <returns>Output of the script</returns>
-        private string GetScriptResults(string script)
-        {
-            string res = "";
-            // Create a new PowerShell, load the script, launch it and obtain the output
-            using (PowerShell ps = PowerShell.Create().AddScript(script))
-            {
-                // Get results from the PowerShell
-                Collection<PSObject> results = ps.Invoke();
-                foreach (PSObject result in results)
-                {
-                    // Add the results to the return value
-                    res += result;
-                }
-            }
-            return res;
         }
 
         /// <summary>
@@ -303,11 +267,11 @@ namespace PowerShellUI1
                     }
                 }
                 // Add line separators, because having it all glued is ugly
-                res += "\r\n" + EntrySeparator + "\r\n\r\n";
+                res += "\r\n" + Utilities.ResultEntrySeparator + "\r\n\r\n";
             }
 
             // Remove last separator before returning the value
-            return res.Substring(0, res.LastIndexOf(EntrySeparator)).Trim();
+            return res.Substring(0, res.LastIndexOf(Utilities.ResultEntrySeparator)).Trim();
         }
 
         /// <summary>

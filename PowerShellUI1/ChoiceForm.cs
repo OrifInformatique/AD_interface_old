@@ -13,6 +13,7 @@ namespace PowerShellUI1
         private RetreiveForm retreiveData;
         private ChangePasswordForm changePassword;
         private InstallForm installAD;
+        private AdvancedRetreiveForm advancedRetreiveData;
 
         #region Static
         /// <summary>
@@ -86,7 +87,7 @@ namespace PowerShellUI1
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OpenPwdForm_Click(object sender, EventArgs e)
+        private void OpenPwdForm(object sender, EventArgs e)
         {
             if (changePassword == null || changePassword.IsDisposed)
             {
@@ -101,7 +102,7 @@ namespace PowerShellUI1
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OpenInstallADForm_Click(object sender, EventArgs e)
+        private void OpenInstallADForm(object sender, EventArgs e)
         {
             if (installAD == null || installAD.IsDisposed)
             {
@@ -115,6 +116,21 @@ namespace PowerShellUI1
             }
             installAD.Show();
         }
+
+        /// <summary>
+        /// Opens an AdvancedRetreiveForm
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OpenAdvancedRetreiveForm(object sender, EventArgs e)
+        {
+            if(advancedRetreiveData == null || advancedRetreiveData.IsDisposed)
+            {
+                advancedRetreiveData = new AdvancedRetreiveForm(Path);
+            }
+
+            advancedRetreiveData.Show();
+        }
         #endregion
 
         /// <summary>
@@ -127,6 +143,7 @@ namespace PowerShellUI1
             bool b = InstallForm.IsADInstalled;
             openRetrieveFrom.Enabled = b;
             openPwdForm.Enabled = b;
+            openAdvancedRetreiveForm.Enabled = b;
         }
     }
 }

@@ -180,7 +180,7 @@ namespace PowerShellUI1
                     _ = process.Start();
                     while (!process.HasExited)
                     {
-                        strBui.Append(process.StandardOutput.ReadToEnd());
+                        _ = strBui.Append(process.StandardOutput.ReadToEnd());
                     }
                 }
                 catch { }

@@ -35,6 +35,8 @@
             this.RetreiveInfoLabel = new System.Windows.Forms.Label();
             this.PwdInfoLabel = new System.Windows.Forms.Label();
             this.PwdWarnLabel = new System.Windows.Forms.Label();
+            this.openAdvancedRetreiveForm = new System.Windows.Forms.Button();
+            this.AdvancedRetreiveInfoLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // openRetrieveFrom
@@ -58,7 +60,7 @@
             this.openInstallADForm.TabIndex = 0;
             this.openInstallADForm.Text = "Installation";
             this.openInstallADForm.UseVisualStyleBackColor = true;
-            this.openInstallADForm.Click += new System.EventHandler(this.OpenInstallADForm_Click);
+            this.openInstallADForm.Click += new System.EventHandler(this.OpenInstallADForm);
             // 
             // openPwdForm
             // 
@@ -68,7 +70,7 @@
             this.openPwdForm.TabIndex = 2;
             this.openPwdForm.Text = "Mot de passe";
             this.openPwdForm.UseVisualStyleBackColor = true;
-            this.openPwdForm.Click += new System.EventHandler(this.OpenPwdForm_Click);
+            this.openPwdForm.Click += new System.EventHandler(this.OpenPwdForm);
             // 
             // ADInstallInfoLabel
             // 
@@ -108,11 +110,32 @@
             this.PwdWarnLabel.Text = "Ne fonctionne probablement pas!";
             this.PwdWarnLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
+            // openAdvancedRetreiveForm
+            // 
+            this.openAdvancedRetreiveForm.Location = new System.Drawing.Point(176, 215);
+            this.openAdvancedRetreiveForm.Name = "openAdvancedRetreiveForm";
+            this.openAdvancedRetreiveForm.Size = new System.Drawing.Size(158, 40);
+            this.openAdvancedRetreiveForm.TabIndex = 7;
+            this.openAdvancedRetreiveForm.Text = "Informations détaillées";
+            this.openAdvancedRetreiveForm.UseVisualStyleBackColor = true;
+            this.openAdvancedRetreiveForm.Click += new System.EventHandler(this.OpenAdvancedRetreiveForm);
+            // 
+            // AdvancedRetreiveInfoLabel
+            // 
+            this.AdvancedRetreiveInfoLabel.Location = new System.Drawing.Point(176, 135);
+            this.AdvancedRetreiveInfoLabel.Name = "AdvancedRetreiveInfoLabel";
+            this.AdvancedRetreiveInfoLabel.Size = new System.Drawing.Size(158, 77);
+            this.AdvancedRetreiveInfoLabel.TabIndex = 8;
+            this.AdvancedRetreiveInfoLabel.Text = "Ouvre une fenêtre pour obtenir les informations détaillées sur un utilisateur.";
+            this.AdvancedRetreiveInfoLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
             // ChoiceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(514, 450);
+            this.Controls.Add(this.AdvancedRetreiveInfoLabel);
+            this.Controls.Add(this.openAdvancedRetreiveForm);
             this.Controls.Add(this.PwdWarnLabel);
             this.Controls.Add(this.PwdInfoLabel);
             this.Controls.Add(this.RetreiveInfoLabel);
@@ -137,5 +160,7 @@
         private System.Windows.Forms.Label RetreiveInfoLabel;
         private System.Windows.Forms.Label PwdInfoLabel;
         private System.Windows.Forms.Label PwdWarnLabel;
+        private System.Windows.Forms.Button openAdvancedRetreiveForm;
+        private System.Windows.Forms.Label AdvancedRetreiveInfoLabel;
     }
 }
