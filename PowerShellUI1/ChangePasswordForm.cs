@@ -13,8 +13,10 @@ namespace PowerShellUI1
     public partial class ChangePasswordForm : Form
     {
         #region Variables
+
         private readonly string path = ChoiceForm.Path,
             scriptSubfolder = ChoiceForm.ScriptSubfolder;
+
         // Tooltip object
         private readonly ToolTip tooltip = new ToolTip();
 
@@ -22,9 +24,11 @@ namespace PowerShellUI1
         /// The name of the script.
         /// </summary>
         private static string PasswordScript => "ChangeUserPassword.ps1";
-        #endregion
+
+        #endregion Variables
 
         #region Constructors
+
         /// <summary>
         /// Creates a new <code>ChangePasswordForm</code>.
         /// </summary>
@@ -54,7 +58,8 @@ namespace PowerShellUI1
             this.path = path;
             SetToolTips();
         }
-        #endregion
+
+        #endregion Constructors
 
         /// <summary>
         /// Changes the password of the user specified.
@@ -188,6 +193,7 @@ namespace PowerShellUI1
         }
 
         #region Events
+
         /// <summary>
         /// Calls <code>ChangePassword</code> when the user presses enter.
         /// </summary>
@@ -205,6 +211,7 @@ namespace PowerShellUI1
                     break;
             }
         }
-        #endregion
+
+        #endregion Events
     }
 }

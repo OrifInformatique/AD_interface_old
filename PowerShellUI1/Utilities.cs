@@ -10,7 +10,6 @@ namespace PowerShellUI1
     /// </summary>
     internal class Utilities
     {
-
         /// <summary>
         /// String that separates the multiple entries.
         /// </summary>
@@ -58,7 +57,7 @@ namespace PowerShellUI1
             string content = "";
             try
             {
-                using(StreamReader strReader = new StreamReader(file))
+                using (StreamReader strReader = new StreamReader(file))
                 {
                     content = strReader.ReadToEnd();
                 }

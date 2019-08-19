@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;  // Enables Stream Reader
-using System.Management.Automation; // Enables PowerShell
 using System.Windows.Forms;
 
 namespace PowerShellUI1
@@ -13,11 +12,14 @@ namespace PowerShellUI1
     public partial class RetreiveForm : Form
     {
         #region Variables
-        #region readonly
+
+        #region Readonly
+
         // Name of the folder containing the scripts
-        readonly string scriptSubfolder = ChoiceForm.ScriptSubfolder,
+        private readonly string scriptSubfolder = ChoiceForm.ScriptSubfolder,
             // Path to scripts
             path = ChoiceForm.Path;
+
         // Translates between powershell filters and french
         private readonly Dictionary<string, string> convert = new Dictionary<string, string>() {
             {"nom", "Surname"},
@@ -32,6 +34,7 @@ namespace PowerShellUI1
         },
             // Reverse of convert
             iconvert;
+
         // Options shared by all groups
         private readonly Collection<string> sharedOptions = new Collection<string>() {
             "Nom Technique", "Actif", "Nom", "Identifiant", "SID"
@@ -44,24 +47,31 @@ namespace PowerShellUI1
             computerOptions = new Collection<string>() { "Nom DNS" },
             // Current list of options for the user
             currentList = new Collection<string>();
+
         // Tooltip object
         private readonly ToolTip tooltip = new ToolTip();
-        #endregion
 
-        #region static
+        #endregion Readonly
+
+        #region Static
+
         /// <summary>
         /// Script that contains the logic behind the loading.
         /// </summary>
         private static string UserScript => "getUser.ps1";
-        #endregion
+
+        #endregion Static
 
         // The item selected
         private string selected = "utilisateur";
+
         // options for the user
         private Dictionary<string, bool> options;
-        #endregion
+
+        #endregion Variables
 
         #region Constructors
+
         /// <summary>
         /// Creates a new <code>RetreiveForm</code>.
         /// </summary>
@@ -82,7 +92,7 @@ namespace PowerShellUI1
             if (path == null)
             {
                 path = Path.GetDirectoryName(Application.ExecutablePath);
-                // Go upward until in AD_interface  
+                // Go upward until in AD_interface
                 while (!Directory.Exists(path + ChoiceForm.ScriptSubfolder))
                 {
                     int index = path.LastIndexOf("\\");
@@ -117,9 +127,11 @@ namespace PowerShellUI1
             searchTextBox.Select();
             filterList.SelectedItem = "Identifiant";
         }
-        #endregion
+
+        #endregion Constructors
 
         #region Displays
+
         /// <summary>
         /// Updates the resultTextBox's Text with the data.
         /// </summary>
@@ -174,9 +186,11 @@ namespace PowerShellUI1
                 return;
             }
         }
-        #endregion
+
+        #endregion Displays
 
         #region Item-related functions
+
         /// <summary>
         /// Obtains the powershell script.
         /// </summary>
@@ -238,6 +252,7 @@ namespace PowerShellUI1
                     whichNumberUD.Enabled = false;
                     multipleCheckBox.Enabled = false;
                     break;
+
                 default:
                     ifMultipleLabel.Enabled = true;
                     whichNumberUD.Enabled = !multipleCheckBox.Checked;
@@ -326,9 +341,11 @@ namespace PowerShellUI1
 
             return res;
         }
-        #endregion
+
+        #endregion Item-related functions
 
         #region Other functions
+
         /// <summary>
         /// Checks all the options and updates the option dictionary
         /// </summary>
@@ -424,9 +441,11 @@ namespace PowerShellUI1
             tooltip.SetToolTip(computerRButton, "Chercher parmis les ordinateurs");
             tooltip.SetToolTip(searchTextBox, "Critère(s) de recherche");
         }
-        #endregion
+
+        #endregion Other functions
 
         #region Events
+
         /// <summary>
         /// Updates <code>isUser</code>.
         /// </summary>
@@ -487,6 +506,7 @@ namespace PowerShellUI1
                     break;
             }
         }
-        #endregion
+
+        #endregion Events
     }
 }

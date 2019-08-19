@@ -10,22 +10,27 @@ namespace PowerShellUI1
     public partial class ChoiceForm : Form
     {
         #region Variables
+
         private RetreiveForm retreiveData;
         private ChangePasswordForm changePassword;
         private InstallForm installAD;
         private AdvancedRetreiveForm advancedRetreiveData;
 
         #region Static
+
         /// <summary>
         /// The subfolder containing all scripts.
         /// </summary>
         public static string ScriptSubfolder => "\\Scripts\\";
+
         /// <summary>
         /// Path to AD_interface folder.
         /// </summary>
         public static string Path { get; private set; }
-        #endregion
-        #endregion
+
+        #endregion Static
+
+        #endregion Variables
 
         /// <summary>
         /// Creates a new ChoiceForm.
@@ -67,6 +72,7 @@ namespace PowerShellUI1
         }
 
         #region Forms opening
+
         /// <summary>
         /// Opens a <code>RetreiveForm</code>.
         /// </summary>
@@ -124,14 +130,15 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void OpenAdvancedRetreiveForm(object sender, EventArgs e)
         {
-            if(advancedRetreiveData == null || advancedRetreiveData.IsDisposed)
+            if (advancedRetreiveData == null || advancedRetreiveData.IsDisposed)
             {
                 advancedRetreiveData = new AdvancedRetreiveForm(Path);
             }
 
             advancedRetreiveData.Show();
         }
-        #endregion
+
+        #endregion Forms opening
 
         /// <summary>
         /// Enables/disables the different buttons depending on the state of the AD module.

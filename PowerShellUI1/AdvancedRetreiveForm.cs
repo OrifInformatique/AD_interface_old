@@ -48,6 +48,7 @@ namespace PowerShellUI1
         /// Name of the file that contains the script to launch
         /// </summary>
         private static string ScriptName => "AdvancedGetUser.ps1";
+
         #endregion Static
 
         private Dictionary<string, string>[] lastitems = null;
@@ -63,7 +64,6 @@ namespace PowerShellUI1
         {
             InitializeComponent();
             CenterToScreen();
-            SetToolTips();
 
             if (path == null)
             {
@@ -112,7 +112,6 @@ namespace PowerShellUI1
         {
             InitializeComponent();
             CenterToScreen();
-            SetToolTips();
 
             if (Props == null)
             {
@@ -152,10 +151,6 @@ namespace PowerShellUI1
             CriteriaListBox.SelectedItem = "SamAccountName";
         }
 
-        /// <summary>
-        /// Sets the tooltips for different form items
-        /// </summary>
-        private void SetToolTips() { }
         #endregion Init methods
 
         #region Main methods
@@ -319,6 +314,7 @@ namespace PowerShellUI1
             result = TextFromItems(lastitems);
             ResultTextBox.Text = result;
         }
+
         #endregion Main methods
 
         #region Misc methods

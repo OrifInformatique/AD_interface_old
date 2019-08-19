@@ -12,6 +12,7 @@ namespace PowerShellUI1
     public partial class InstallForm : Form
     {
         #region Variables
+
         private readonly string path = ChoiceForm.Path,
             scriptSubfolder = ChoiceForm.ScriptSubfolder;
 
@@ -19,6 +20,7 @@ namespace PowerShellUI1
         /// Whether or not the ActiveDirectory module is installed.
         /// </summary>
         public static bool IsADInstalled { get; private set; }
+
         /// <summary>
         /// The name of the installation script.
         /// </summary>
@@ -28,9 +30,11 @@ namespace PowerShellUI1
         /// Whether or not the AD module is being installed
         /// </summary>
         private static bool IsAdInstalling = false;
-        #endregion
+
+        #endregion Variables
 
         #region Constructors
+
         /// <summary>
         /// Creates a new instance of InstallForm.
         /// </summary>
@@ -41,7 +45,7 @@ namespace PowerShellUI1
             if (path == null)
             {
                 path = Path.GetDirectoryName(Application.ExecutablePath);
-                // Go upward until in AD_interface  
+                // Go upward until in AD_interface
                 while (!Directory.Exists(path + ChoiceForm.ScriptSubfolder))
                 {
                     int index = path.LastIndexOf("\\");
@@ -85,9 +89,11 @@ namespace PowerShellUI1
                 return;
             }
         }
-        #endregion
+
+        #endregion Constructors
 
         #region AD installation
+
         /// <summary>
         /// Installs the ActiveDirectory module on powershell.
         /// Does nothing if it is already installed.
@@ -151,9 +157,11 @@ namespace PowerShellUI1
                 installBtn.Enabled = true;
             }
         }
-        #endregion
+
+        #endregion AD installation
 
         #region Events
+
         /// <summary>
         /// Updates <code>IsADInstalled</code> to true if AD was installed.
         /// </summary>
@@ -225,6 +233,7 @@ namespace PowerShellUI1
             _ = MessageBox.Show("Le module AD a été installé.");
             UpdateIsADInstalled();
         }
-        #endregion
+
+        #endregion Events
     }
 }
