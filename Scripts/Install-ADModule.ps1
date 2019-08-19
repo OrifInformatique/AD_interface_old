@@ -1,4 +1,4 @@
-#requires -RunAsAdministrator
+ï»¿#requires -RunAsAdministrator
 <#
 .SYNOPSIS
 Installs the ActiveDirectory module in Powershell.
@@ -26,15 +26,15 @@ Function Install-ADModule {
     # Script only works in Windows 10, make sure it it the current OS
     If ((Get-CimInstance Win32_OperatingSystem).Caption -notlike "*Windows 10*") {
         #throw [System.Exception] "OS must be Windows 10"
-        Write-Warning "Le système d'exploitation doit être Windows 10!"
+        Write-Warning "Le systÃ¨me d'exploitation doit Ãªtre Windows 10!"
         break
     }
 
     # Checks that RSAT is not installed, otherwise install it
     If (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue) {
-        Write-Host "---Module AD déjà installé"
+        Write-Host "---Module AD dÃ©jÃ  installÃ©"
     } Else {
-        Write-Host "---Téléchargement du module AD"
+        Write-Host "---TÃ©lÃ©chargement du module AD"
 
         # Checks the architecture and selects the correct version of RSAT
         If ((Get-CimInstance Win32_ComputerSystem).SystemType -like "x64*") {
@@ -51,7 +51,7 @@ Function Install-ADModule {
         $WebClient.DownloadFile($URL,$Destination)
         $WebClient.Dispose()
 
-        Write-Host "---Téléchargement terminé"
+        Write-Host "---TÃ©lÃ©chargement terminÃ©"
 
         # Installs the RSAT
         Write-Host '---Installation du module AD'
@@ -64,7 +64,7 @@ Function Install-ADModule {
             Start-Sleep -Seconds 5
         } until (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue)
         Write-Host "."
-        Write-Host "---Installation terminée"
+        Write-Host "---Installation terminÃ©e"
     }
 
     # Since enabling the RSAT was not working in the original, there is no reason to keep it
@@ -76,7 +76,7 @@ Function Install-ADModule {
         $isVerbose = $PSBoundParameters.Get_Item('Verbose')
     }
     Update-Help -Module ActiveDirectory -Verbose:$isVerbose -Force
-    Write-Verbose "---Rafraichissement terminé"
+    Write-Verbose "---Rafraichissement terminÃ©"
 	Stop-Process $PID -Force
 }
 
