@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Management.Automation;
 using System.Text;
 using System.Windows.Forms;
 
@@ -152,6 +151,22 @@ namespace PowerShellUI1
         #region Main methods
 
         /// <summary>
+        /// Updates the result textbox with the found user(s)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateResultTextBox(object sender = null, EventArgs e = null)
+        {
+            string script = GetBaseScript(),
+                item = Utilities.GetScriptResults(script),
+                result;
+            string[] items = item.Trim().Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            lastitems = SliceItems(items);
+            result = TextFromItems(lastitems);
+            ResultTextBox.Text = result;
+        }
+
+        /// <summary>
         /// Displays the result in a window
         /// </summary>
         /// <param name="sender"></param>
@@ -159,18 +174,8 @@ namespace PowerShellUI1
         private void DisplayResultWindow(object sender = null, EventArgs e = null)
         {
             string script = GetBaseScript().Replace("Out-String", "Out-Gridview -Title 'Informations sur les utilisateurs'");
-            try
-            {
-                // Display window
-                _ = Utilities.GetScriptResults(script);
-            }
-            catch
-            {
-                // Problem in script execution, tell the user
-                WarningLabel.Visible = true;
-                WarningLabel.Text = "Erreur dans l'execution du script";
-                return;
-            }
+            // Display window
+            _ = Utilities.GetScriptResults(script);
         }
 
         /// <summary>
@@ -265,8 +270,8 @@ namespace PowerShellUI1
                     break;
 
                 default:
-                    WhichOne.Enabled = true;
                     MultipleCheckBox.Enabled = true;
+                    WhichOne.Enabled = !MultipleCheckBox.Checked;
                     break;
             }
 
@@ -295,22 +300,6 @@ namespace PowerShellUI1
             return result.Substring(0, result.LastIndexOf(Utilities.ResultEntrySeparator)).Trim();
         }
 
-        /// <summary>
-        /// Updates the result textbox with the found user(s)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void UpdateResultTextBox(object sender = null, EventArgs e = null)
-        {
-            string script = GetBaseScript(),
-                item = Utilities.GetScriptResults(script),
-                result;
-            string[] items = item.Trim().Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            lastitems = SliceItems(items);
-            result = TextFromItems(lastitems);
-            ResultTextBox.Text = result;
-        }
-
         #endregion Main methods
 
         #region Misc methods
@@ -334,19 +323,29 @@ namespace PowerShellUI1
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void OnChangeCB(object sender, EventArgs e)
+        {
+            _ = BeginInvoke((MethodInvoker) (
+                () =>
+                {
+                    OnChangeDisplay(sender, e);
+                }
+            ));
+        }
+
+        /// <summary>
+        /// Updates the result text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnChangeDisplay(object sender, EventArgs e)
         {
             if (lastitems == null)
             {
                 return;
             }
-            _ = BeginInvoke((MethodInvoker) (
-                () =>
-                {
-                    string result = TextFromItems(lastitems);
-                    ResultTextBox.Text = result;
-                }
-            ));
+            string result = TextFromItems(lastitems);
+            ResultTextBox.Text = result;
         }
 
         /// <summary>

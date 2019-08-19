@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Management.Automation;
 using System.Windows.Forms;
 
 namespace PowerShellUI1
@@ -78,14 +76,14 @@ namespace PowerShellUI1
                 scriptContent, currentPath;
 
             // Is the password empty
-            if (password.Equals("") || passwordAgain.Equals("") || currentUserPasswordTextBox.Text.Equals(""))
+            if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(passwordAgain) || string.IsNullOrEmpty(currentUserPasswordTextBox.Text))
             {
                 errorLabel.Visible = true;
                 errorLabel.Text = "Entrez un mot de passe!";
                 return;
             }
             // Is there an username provided
-            else if (username.Equals("") || currentUserTextBox.Text.Equals(""))
+            else if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(currentUserTextBox.Text))
             {
                 errorLabel.Visible = true;
                 errorLabel.Text = "Fournissez un nom d'utilisateur";
@@ -102,7 +100,7 @@ namespace PowerShellUI1
             // Create a new powershell
             string result = Utilities.GetScriptResults("(Get-ADDefaultDomainPasswordPolicy).MinPasswordLength");
             int minPasswordLength = 6;
-            if(int.TryParse(result, out int i))
+            if (int.TryParse(result, out int i))
             {
                 minPasswordLength = i;
             }

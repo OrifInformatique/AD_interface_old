@@ -144,15 +144,12 @@ namespace PowerShellUI1
             string script = GetBaseScript(),
                 // Run script and get results
                 item;
-            try
-            {
-                item = Utilities.GetScriptResults(script);
-            }
-            catch
+            item = Utilities.GetScriptResults(script);
+            if(item.Length == 0)
             {
                 // Problem in script execution, tell the user
                 statusLabel.Visible = true;
-                statusLabel.Text = "Erreur dans l'execution du script";
+                statusLabel.Text = "Aucun " + selected + " trouvé";
                 return;
             }
             // Split script results into separate items
@@ -173,17 +170,12 @@ namespace PowerShellUI1
             statusLabel.Visible = false;
             // Obtain script and modify it
             string script = GetBaseScript().Replace("Out-String", "Out-Gridview -Title 'Informations sur les " + selected + "s'");
-            try
+            // Display window
+            string result = Utilities.GetScriptResults(script);
+            if (result.Length == 0)
             {
-                // Display window
-                _ = Utilities.GetScriptResults(script);
-            }
-            catch
-            {
-                // Problem in script execution, tell the user
                 statusLabel.Visible = true;
                 statusLabel.Text = "Erreur dans l'execution du script";
-                return;
             }
         }
 

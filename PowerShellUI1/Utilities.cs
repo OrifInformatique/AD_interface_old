@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
 using System.IO;
 using System.Management.Automation;
 
@@ -8,22 +8,12 @@ namespace PowerShellUI1
     /// Class containing multiple useful methods/values
     /// that are used through the application
     /// </summary>
-    internal class Utilities
+    internal static class Utilities
     {
         /// <summary>
         /// String that separates the multiple entries.
         /// </summary>
         public static string ResultEntrySeparator => "――――――";
-
-        /// <summary>
-        /// Creates a new instance of Utilities.
-        /// Illegal.
-        /// </summary>
-        /// <throws>An error because you should not have to use an instance</throws>
-        public Utilities()
-        {
-            throw new System.Exception("Cannot create a new instance of Utilities");
-        }
 
         /// <summary>
         /// Obtains the output from a powershell script.
@@ -37,7 +27,7 @@ namespace PowerShellUI1
             using (PowerShell ps = PowerShell.Create().AddScript(script))
             {
                 // Get results from the PowerShell
-                Collection<PSObject> results = ps.Invoke();
+                var results = ps.Invoke();
                 foreach (PSObject result in results)
                 {
                     // Add the results to the return value
@@ -50,19 +40,26 @@ namespace PowerShellUI1
         /// <summary>
         /// Returns the contents of a file
         /// </summary>
-        /// <param name="file">The path to the file</param>
+        /// <param name="filepath">The path to the file</param>
         /// <returns>The contents of the file</returns>
-        public static string GetFileContents(string file)
+        public static string GetFileContents(string filepath)
         {
             string content = "";
             try
             {
-                using (StreamReader strReader = new StreamReader(file))
+                using (StreamReader strReader = new StreamReader(filepath))
                 {
                     content = strReader.ReadToEnd();
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                if (e is IOException ||
+                    e is OutOfMemoryException)
+                {
+                    return "";
+                }
+            }
             return content;
         }
     }

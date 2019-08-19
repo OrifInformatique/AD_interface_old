@@ -156,7 +156,7 @@
             this.DisplayCheckBox.Name = "DisplayCheckBox";
             this.DisplayCheckBox.Size = new System.Drawing.Size(249, 349);
             this.DisplayCheckBox.TabIndex = 10;
-            this.DisplayCheckBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.OnChangeDisplay);
+            this.DisplayCheckBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.OnChangeCB);
             // 
             // SearchCriteria
             // 

@@ -155,6 +155,7 @@ namespace PowerShellUI1
                 statusLabel.Text = "L'installation du module AD n'a pas pus être commencée";
                 statusLabel.Visible = true;
                 installBtn.Enabled = true;
+                return;
             }
         }
 
@@ -191,7 +192,10 @@ namespace PowerShellUI1
                         _ = strBui.Append(process.StandardOutput.ReadToEnd());
                     }
                 }
-                catch { }
+                catch
+                {
+                    _ = strBui.Clear();
+                }
             }
             IsADInstalled = strBui.ToString().Length != 0;
             if (IsADInstalled)

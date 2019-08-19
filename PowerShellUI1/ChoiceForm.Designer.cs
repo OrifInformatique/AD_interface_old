@@ -13,9 +13,28 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+                if (retreiveData != null)
+                {
+                    retreiveData.Dispose();
+                }
+                if (changePassword != null)
+                {
+                    changePassword.Dispose();
+                }
+                if (installAD != null)
+                {
+                    installAD.Dispose();
+                }
+                if (advancedRetreiveData != null)
+                {
+                    advancedRetreiveData.Dispose();
+                }
             }
             base.Dispose(disposing);
         }
