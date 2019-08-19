@@ -115,16 +115,7 @@ namespace PowerShellUI1
 
             if (Props == null)
             {
-                string result = "";
-                using (PowerShell ps = PowerShell.Create().AddScript("(Get-ADUser -Filter 'samAccountName -like \"*\"' -Properties *)[0].propertynames").AddCommand("out-string"))
-                {
-                    IAsyncResult asr = ps.BeginInvoke();
-                    PSDataCollection<PSObject> results = ps.EndInvoke(asr);
-                    foreach (var s in results)
-                    {
-                        result += s;
-                    }
-                }
+                string result = Utilities.GetScriptResults("(Get-ADUser -Filter 'samAccountName -like \"*\"' -Properties *)[0].propertynames | Out-String");
                 Props = result.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             }
             SetBoxesValues();
@@ -141,6 +132,11 @@ namespace PowerShellUI1
         /// </summary>
         private void SetBoxesValues()
         {
+            if (Props == null)
+            {
+                return;
+            }
+
             CriteriaListBox.Items.Clear();
             DisplayCheckBox.Items.Clear();
             foreach (string s in Props)

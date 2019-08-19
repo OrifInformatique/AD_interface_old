@@ -100,28 +100,11 @@ namespace PowerShellUI1
             }
 
             // Create a new powershell
-            PowerShell ps = PowerShell.Create();
+            string result = Utilities.GetScriptResults("(Get-ADDefaultDomainPasswordPolicy).MinPasswordLength");
             int minPasswordLength = 6;
-            _ = ps.AddScript("(Get-ADDefaultDomainPasswordPolicy).MinPasswordLength");
-            try
+            if(int.TryParse(result, out int i))
             {
-                Collection<PSObject> results = ps.Invoke();
-                foreach (PSObject result in results)
-                {
-                    // Get the minimum length of password
-                    if (int.TryParse(result.ToString(), out int i))
-                    {
-                        minPasswordLength = i;
-                    }
-                }
-            }
-            catch
-            {
-                minPasswordLength = 6;
-            }
-            finally
-            {
-                ps.Dispose();
+                minPasswordLength = i;
             }
 
             // Check that password is longer than minimum length
@@ -153,31 +136,9 @@ namespace PowerShellUI1
             // TODO: Find someone who can test that
             // Prepare the script for usage
             scriptContent = scriptContent.Replace("{part}", username).Replace("{newPassword}", password);
-            ps = PowerShell.Create()
-                // May need AddCommand instead of AddScript
-                //.AddCommand(scriptContent);
-                .AddScript(scriptContent);
-            try
-            {
-                // Launch script and check for results
-                Collection<PSObject> results = ps.Invoke();
-                foreach (PSObject result in results)
-                {
-                    errorLabel.Visible = true;
-                    errorLabel.Text += result;
-                }
-            }
-            catch
-            {
-                // Problem with the script, tell the user
-                errorLabel.Visible = true;
-                errorLabel.Text = "Erreur: problème dans l'execution du script.";
-                return;
-            }
-            finally
-            {
-                ps.Dispose();
-            }
+            result = Utilities.GetScriptResults(scriptContent);
+            errorLabel.Visible = true;
+            errorLabel.Text = result;
         }
 
         /// <summary>
