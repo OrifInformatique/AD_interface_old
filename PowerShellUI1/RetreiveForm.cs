@@ -145,7 +145,7 @@ namespace PowerShellUI1
                 // Run script and get results
                 item;
             item = Utilities.GetScriptResults(script);
-            if(item.Length == 0)
+            if (item.Length == 0)
             {
                 // Problem in script execution, tell the user
                 statusLabel.Visible = true;

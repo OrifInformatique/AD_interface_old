@@ -39,6 +39,7 @@ namespace PowerShellUI1
         {
             InitializeComponent();
 
+            InstallForm.UpdateCanInstallAD();
             InstallForm.UpdateIsADInstalled();
             if (!InstallForm.IsADInstalled)
             {
@@ -115,11 +116,6 @@ namespace PowerShellUI1
                 installAD = new InstallForm(Path);
                 installAD.FormClosed += new FormClosedEventHandler(UpdateEnabledButtons);
             }
-            if (!InstallForm.IsADInstalled)
-            {
-                InstallForm.UpdateIsADInstalled();
-                UpdateEnabledButtons(sender, null);
-            }
             installAD.Show();
         }
 
@@ -147,7 +143,11 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void UpdateEnabledButtons(object sender, FormClosedEventArgs e)
         {
-            bool b = InstallForm.IsADInstalled;
+            if (!InstallForm.IsADInstalled)
+            {
+                InstallForm.UpdateIsADInstalled();
+            }
+            bool b = InstallForm.IsADInstalled && InstallForm.CanInstallAD;
             openRetrieveFrom.Enabled = b;
             openPwdForm.Enabled = b;
             openAdvancedRetreiveForm.Enabled = b;

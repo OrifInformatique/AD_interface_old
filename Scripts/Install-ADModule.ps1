@@ -1,4 +1,6 @@
-﻿#requires -RunAsAdministrator
+﻿#requires -Version 4
+#requires -Module CimCmdlets
+#requires -RunAsAdministrator
 <#
 .SYNOPSIS
 Installs the ActiveDirectory module in Powershell.
@@ -11,6 +13,7 @@ Does the following tasks:
 Requires Windows 10.
 Requires an elevated host.
 Requires an internet connection.
+Requires powershell at least version 4.
 #>
 Function Install-ADModule {
     [CmdletBinding()]
@@ -18,56 +21,79 @@ Function Install-ADModule {
 
     # Script needs internet
     If (!(Test-Connection 8.8.8.8 -Quiet)) {
-        #throw [System.Exception] "Internet is required for installation"
+        #throw [System.Exception] 'Internet is required for installation'
         Write-Warning "Internet est requis pour l'installation!"
-        break
+        return
     }
 
-    # Script only works in Windows 10, make sure it it the current OS
-    If ((Get-CimInstance Win32_OperatingSystem).Caption -notlike "*Windows 10*") {
-        #throw [System.Exception] "OS must be Windows 10"
-        Write-Warning "Le système d'exploitation doit être Windows 10!"
-        break
+    $caption = (Get-CimInstance Win32_OperatingSystem).Caption
+    # Windows 10 has a specific file to run
+    If($caption -like '*Windows 10*') {
+        $version = 'Windows 10'
+        $targets = @('WindowsTH-KB2693643-x64.msu', 'WindowsTH-KB2693643-x86.msu')
+        $RSAT = 'KB2693643'
+    # Windows 7 has another file to run
+    } ElseIf($caption -like '*Windows 7*') {
+        $version = 'Windows 7'
+        $targets = @('Windows6.1-KB958830-x64-RefreshPkg.msu', 'Windows6.1-KB958830-x86-RefreshPkg.msu')
+        $RSAT = 'KB958830'
+    # Not Windows 7 or Windows 10, no file to run
+    } Else {
+        Write-Warning "Votre système d'exploitation n'est pas fait pour ceci"
+        $RSAT = ' '
+        $version = $false
     }
+
+    $install = !(Get-HotFix -Id $RSAT -ErrorAction SilentlyContinue)
 
     # Checks that RSAT is not installed, otherwise install it
-    If (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue) {
-        Write-Host "---Module AD déjà installé"
-    } Else {
-        Write-Host "---Téléchargement du module AD"
+    If ($install -and !!($version)) {
+        Write-Host '---Téléchargement du module AD'
 
-        # Checks the architecture and selects the correct version of RSAT
-        If ((Get-CimInstance Win32_ComputerSystem).SystemType -like "x64*") {
-            $dl = 'WindowsTH-KB2693643-x64.msu'
-        } Else {
-            $dl = 'WindowsTH-KB2693643-x86.msu'
-        }
+        $dl = $targets[!(Get-CimInstance Win32_ComputerSystem).SystemType -like 'x64*']
 
         # Downloads the RSAT
-        $BaseURL = 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/'
+        $BaseURL = 'https://download.microsoft.com/download/'
+        $BaseURL += Switch ($version) {
+            'Windows 10' {'1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/'}
+            'Windows 7' {'4/F/7/4F71806A-1C56-4EF2-9B4F-9870C4CFD2EE/'}
+            default {
+                Write-Warning 'Version inconnue'
+                return;
+            }
+        }
         $URL = $BaseURL + $dl
         $Destination = Join-Path -Path $HOME -ChildPath "Downloads\$dl"
         $WebClient = New-Object System.Net.WebClient
         $WebClient.DownloadFile($URL,$Destination)
         $WebClient.Dispose()
 
-        Write-Host "---Téléchargement terminé"
+        Write-Host '---Téléchargement terminé'
 
         # Installs the RSAT
         Write-Host '---Installation du module AD'
         wusa.exe $Destination /quiet /norestart /log:$home\Documents\RSAT.log
 
         # Until done installing, keep writing dots
-        Write-Host "Installation en cours" -NoNewLine
+        Write-Host 'Installation en cours' -NoNewLine
         do {
-            Write-Host "." -NoNewLine
+            # This part is extremely slow on Windows 7
+            Write-Host '.' -NoNewLine
             Start-Sleep -Seconds 5
-        } until (Get-HotFix -Id KB2693643 -ErrorAction SilentlyContinue)
-        Write-Host "."
-        Write-Host "---Installation terminée"
+        } until (Get-HotFix -Id $RSAT -ErrorAction SilentlyContinue)
+        Write-Host '.'
+        Write-Host '---Installation terminée'
     }
-
-    # Since enabling the RSAT was not working in the original, there is no reason to keep it
+    # Windows 7 needs to have RSAT activated afterward
+    If($version -eq 'Windows 7') {
+        Write-Host '---Activation du module AD'
+        # This part does not work, so the user has to do it manually
+        Dism.exe /online /get-features | Select-String -Pattern remote* | ForEach-Object {
+            $Exec = "Dism.exe /online /enable-feature /featurename:RemoteServerAdministrationTools /featurename:" + ($_).ToString().Replace('Feature Name : ','')
+            Invoke-expression $Exec
+        }
+        Write-Host '---Module AD activé'
+    }
 
     # Download / Update the help for ActiveDirectory
     Write-Verbose "---Rafraichissement de l'aide pour le module AD"
@@ -76,8 +102,7 @@ Function Install-ADModule {
         $isVerbose = $PSBoundParameters.Get_Item('Verbose')
     }
     Update-Help -Module ActiveDirectory -Verbose:$isVerbose -Force
-    Write-Verbose "---Rafraichissement terminé"
-	Stop-Process $PID -Force
+    Write-Verbose '---Rafraichissement terminé'
 }
 
 # Launch function

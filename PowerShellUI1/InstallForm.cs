@@ -22,6 +22,11 @@ namespace PowerShellUI1
         public static bool IsADInstalled { get; private set; }
 
         /// <summary>
+        /// Whether or not the module can be installed
+        /// </summary>
+        public static bool CanInstallAD { get; private set; }
+
+        /// <summary>
         /// The name of the installation script.
         /// </summary>
         private static string InstallScript => "Install-ADModule.ps1";
@@ -65,6 +70,8 @@ namespace PowerShellUI1
                 statusLabel.Text = "Le module AD est en cours d'installation";
                 return;
             }
+
+            UpdateCanInstallAD();
         }
 
         /// <summary>
@@ -88,6 +95,8 @@ namespace PowerShellUI1
                 statusLabel.Text = "Le module AD est en cours d'installation";
                 return;
             }
+
+            UpdateCanInstallAD();
         }
 
         #endregion Constructors
@@ -102,7 +111,13 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void InstallADModulePowershell(object sender, EventArgs e)
         {
-            if (IsADInstalled)
+            if (!CanInstallAD)
+            {
+                statusLabel.Visible = true;
+                statusLabel.Text = "Votre version de PowerShell ne peux pas installer le module AD.\nVeuillez installer PowerShell en version 4 ou plus";
+                return;
+            }
+            else if (IsADInstalled)
             {
                 resultLabel.Visible = true;
                 resultLabel.Text = "Le module AD est déjà installé";
@@ -134,20 +149,39 @@ namespace PowerShellUI1
         {
             try
             {
+                string targetfolder = path + scriptSubfolder;
+
                 // Tell user that installation is in progress
                 IsAdInstalling = true;
                 installBtn.Enabled = false;
-                statusLabel.Text = "Installation du module AD, veuillez patienter.\nÇa va prendre un moment.";
+                statusLabel.Text = "Installation du module AD, veuillez patienter.\nÇa va prendre autour de 5 minutes.";
                 statusLabel.Visible = true;
                 // Load a new powershell
-                Process proc = Process.Start(new ProcessStartInfo
+                using (Process proc = new Process
                 {
-                    FileName = "powershell.exe",
-                    Verb = "runas",
-                    Arguments = $"set-executionpolicy unrestricted -force;\r\n{path + scriptSubfolder + InstallScript}"
-                });
-                proc.Exited += ADInstallFinished;
-                proc.Disposed += ADInstallFinished;
+                    EnableRaisingEvents = true,
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Verb = "runas",
+                        Arguments = $"set-executionpolicy unrestricted -force;\r\n{targetfolder + InstallScript}"
+                    }
+                })
+                {
+                    _ = proc.Start();
+                    proc.WaitForExit();
+                    if (proc.ExitCode == 0)
+                    {
+                        ADInstallFinished();
+                    }
+                    else
+                    {
+                        IsAdInstalling = false;
+                        statusLabel.Text = "L'installation du module AD a été annulée";
+                        statusLabel.Visible = true;
+                        installBtn.Enabled = true;
+                    }
+                }
             }
             catch
             {
@@ -162,6 +196,41 @@ namespace PowerShellUI1
         #endregion AD installation
 
         #region Events
+
+        /// <summary>
+        /// Updates CanInstallAD
+        /// </summary>
+        public static void UpdateCanInstallAD()
+        {
+            StringBuilder strBui = new StringBuilder();
+            using (Process process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = "$PSVersionTable.PSVersion.Major | Out-String",
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                }
+            })
+            {
+                try
+                {
+                    _ = process.Start();
+                    while (!process.HasExited)
+                    {
+                        _ = strBui.Append(process.StandardOutput.ReadToEnd());
+                    }
+                }
+                catch
+                {
+                    _ = strBui.Clear();
+                }
+            }
+            int psversion = int.TryParse(strBui.ToString(), out int i) ? i : 1;
+            CanInstallAD = !(psversion < 4);
+        }
 
         /// <summary>
         /// Updates <code>IsADInstalled</code> to true if AD was installed.
@@ -227,7 +296,7 @@ namespace PowerShellUI1
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ADInstallFinished(object sender, object e)
+        private void ADInstallFinished(object sender = null, EventArgs e = null)
         {
             IsAdInstalling = false;
             installBtn.Enabled = true;
@@ -235,6 +304,19 @@ namespace PowerShellUI1
             resultLabel.Visible = true;
             resultLabel.Text = "Le module AD a été installé.";
             _ = MessageBox.Show("Le module AD a été installé.");
+
+            {
+                OperatingSystem os = Environment.OSVersion;
+                Version vs = os.Version;
+                // Special message for windows 7 users,
+                // because I can't manage that part yet
+                if (os.Platform == PlatformID.Win32NT &&
+                    vs.Major == 6 && vs.Minor == 1)
+                {
+                    _ = MessageBox.Show("Le module AD a été installé mais n'a pas été activé.\nVeuillez l'activer manuellement.");
+                }
+            }
+
             UpdateIsADInstalled();
         }
 
