@@ -1,0 +1,14 @@
+C:\Users\Buya\Desktop\AD\AD\bin\Debug\AD.exe.config
+C:\Users\Buya\Desktop\AD\AD\bin\Debug\AD.exe
+C:\Users\Buya\Desktop\AD\AD\bin\Debug\AD.pdb
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.csprojAssemblyReference.cache
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.Form1.resources
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.Properties.Resources.resources
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.csproj.GenerateResource.cache
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.csproj.CoreCompileInputs.cache
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.exe
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.pdb
+C:\Users\Buya\Desktop\AD\AD\bin\Debug\System.Management.Automation.dll
+C:\Users\Buya\Desktop\AD\AD\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\Users\Buya\Desktop\AD\AD\bin\Debug\System.Management.Automation.xml
+C:\Users\Buya\Desktop\AD\AD\obj\Debug\AD.csproj.CopyComplete
