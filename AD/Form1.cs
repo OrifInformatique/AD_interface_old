@@ -107,13 +107,15 @@ namespace AD
         private void Check_app_Click(object sender, EventArgs e)
         {
             application_statue.Text = "";
-            if(applications_list.Text == "SAI")
+            switch(applications_list.Text)
             {
-                string enabledStr = "";
-                bool enabled = userProperties.TryGetValue("Enabled", out enabledStr);
-                enabled &= enabledStr == "True";
-                Check_condition(enabled, "Utilisateur actif");
-                Check_condition(groupsList.IndexOf("MSP") != -1, "Groupe MSP");
+                case "SAI":
+                    string enabledStr = "";
+                    bool enabled = userProperties.TryGetValue("Enabled", out enabledStr);
+                    enabled &= enabledStr == "True";
+                    Check_condition(enabled, "Utilisateur actif");
+                    Check_condition(groupsList.IndexOf("MSP") != -1, "Groupe MSP");
+                    break;
             }
         }
 
