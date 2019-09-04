@@ -7,6 +7,8 @@ Returns an array containing the parents of the group
 Gets the groups which contain the input group
 .NOTES
 Requires the ActiveDirectory module
+.PARAMETER <GroupName>
+The name of the parent group
 .OUTPUTS
 An array containing all parent groups
 #>
