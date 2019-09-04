@@ -83,8 +83,19 @@ Function Show-GroupChildren {
         # Current depth of checking
         [Parameter(Mandatory=$false)]
         [Int32]
-        $Depth = 0
+        $Depth = 0,
+        # List of all groups already done
+        [Parameter(Mandatory=$false)]
+        [System.Array]
+        $Done = @()
     )
+
+    If($Done.IndexOf($GroupName) -ne -1) {
+        $result = "[$Depth...] $GroupName"
+        Return $result
+    }
+
+    $Done += $GroupName
 
     Try {
         $children = Get-ADGroupMember -Identity $GroupName
@@ -99,7 +110,7 @@ Function Show-GroupChildren {
             If($child.objectGUID -ne [GUID]::parse('00000000-0000-0000-0000-000000000000')) {
                 $ts = Show-GroupChildren -GroupName $child.name -Depth ($Depth+1)
                 If($ts.Length -gt 0) {
-                    $result += "`n$ts"
+                    $result += "`r`n$ts"
                 }
             }
         }
@@ -119,7 +130,7 @@ A string representing the tree.
 Function Get-AllGroupChildren {
     $result = ""
 
-    Get-TopParents | ForEach-Object {$result += (Show-GroupChildren -GroupName $_) + "`n"}
+    Get-TopParents | ForEach-Object {$result += (Show-GroupChildren -GroupName $_) + "`r`n"}
 
     return $result
 }
