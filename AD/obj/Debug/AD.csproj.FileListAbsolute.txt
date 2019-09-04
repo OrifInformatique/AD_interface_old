@@ -26,3 +26,17 @@ C:\Users\Buya\Documents\GitHub\AD_interface\AD\obj\Debug\AD.csproj.CoreCompileIn
 C:\Users\Buya\Documents\GitHub\AD_interface\AD\obj\Debug\AD.csproj.CopyComplete
 C:\Users\Buya\Documents\GitHub\AD_interface\AD\obj\Debug\AD.exe
 C:\Users\Buya\Documents\GitHub\AD_interface\AD\obj\Debug\AD.pdb
+C:\xampp\htdocs\AD_interface\AD\bin\Debug\AD.exe.config
+C:\xampp\htdocs\AD_interface\AD\bin\Debug\AD.exe
+C:\xampp\htdocs\AD_interface\AD\bin\Debug\AD.pdb
+C:\xampp\htdocs\AD_interface\AD\bin\Debug\System.Management.Automation.dll
+C:\xampp\htdocs\AD_interface\AD\bin\Debug\Microsoft.Management.Infrastructure.dll
+C:\xampp\htdocs\AD_interface\AD\bin\Debug\System.Management.Automation.xml
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.csprojAssemblyReference.cache
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.Form1.resources
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.Properties.Resources.resources
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.csproj.GenerateResource.cache
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.csproj.CoreCompileInputs.cache
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.csproj.CopyComplete
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.exe
+C:\xampp\htdocs\AD_interface\AD\obj\Debug\AD.pdb

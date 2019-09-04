@@ -36,17 +36,18 @@ namespace AD
                 output.Text = "";
                 application_statue.Text = "";
                 Collection<PSObject> users, groups;
+                string scriptUser = StoreScritpt("getUser.ps1").Replace("{identifiant}", username.Text),
+                scriptGroups = StoreScritpt("getGroups.ps1").Replace("{identifiant}", username.Text);
 
                 userProperties.Clear();
                 groupsList.Clear();
 
                 using (PowerShell ps = PowerShell.Create())
                 {
-
-                    string scriptUser = StoreScritpt("getUser.ps1").Replace("{identifiant}", username.Text);
                     users = ps.AddScript(scriptUser).Invoke();
-
-                    string scriptGroups = StoreScritpt("getGroups.ps1").Replace("{identifiant}", username.Text);
+                }
+                using (PowerShell ps = PowerShell.Create())
+                {
                     groups = ps.AddScript(scriptGroups).Invoke();
                 }
 
@@ -66,7 +67,7 @@ namespace AD
                     }
                 }
 
-                if (output.Text == "")
+                if (output.Text.Length == 0)
                 {
                     output.Text = "Utilisateur introuvable";
                 }
@@ -118,13 +119,15 @@ namespace AD
         private void Check_app_Click(object sender, EventArgs e)
         {
             application_statue.Text = "";
-            switch(applications_list.Text)
+            switch (applications_list.Text)
             {
                 case "SAI":
                     bool enabled = userProperties.TryGetValue("Enabled", out string enabledStr);
                     enabled &= enabledStr == "True";
                     Check_condition(enabled, "Utilisateur actif");
                     Check_condition(groupsList.IndexOf("MSP") != -1, "Groupe MSP");
+                    break;
+                default:
                     break;
             }
         }
