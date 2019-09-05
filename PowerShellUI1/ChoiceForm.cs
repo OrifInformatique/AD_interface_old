@@ -19,11 +19,6 @@ namespace PowerShellUI1
         #region Static
 
         /// <summary>
-        /// The subfolder containing all scripts.
-        /// </summary>
-        public static string ScriptSubfolder => "\\Scripts\\";
-
-        /// <summary>
         /// Path to AD_interface folder.
         /// </summary>
         public static string Path { get; private set; }
@@ -49,7 +44,7 @@ namespace PowerShellUI1
             // Get the current path
             Path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             // Go upward until in AD_interface
-            while (!Directory.Exists(Path + ScriptSubfolder))
+            while (!Directory.Exists(Path + Utilities.ScriptSubfolder))
             {
                 int index = Path.LastIndexOf("\\");
                 Path = Path.Substring(0, index);

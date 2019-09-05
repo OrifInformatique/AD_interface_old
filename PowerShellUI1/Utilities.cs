@@ -11,6 +11,11 @@ namespace PowerShellUI1
     internal static class Utilities
     {
         /// <summary>
+        /// The subfolder containing all scripts.
+        /// </summary>
+        public static string ScriptSubfolder => "\\Scripts\\";
+
+        /// <summary>
         /// String that separates the multiple entries.
         /// </summary>
         public static string ResultEntrySeparator => "――――――";
