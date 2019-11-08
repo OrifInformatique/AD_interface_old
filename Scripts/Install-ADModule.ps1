@@ -29,19 +29,25 @@ Function Install-ADModule {
     $caption = (Get-CimInstance Win32_OperatingSystem).Caption
     # Windows 10 has a specific file to run
     If($caption -like '*Windows 10*') {
+        # From 1809 the file isn't needed to be downloaded anymore, just activate it
+        If([int](Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion').ReleaseId -ge 1809) {
+            Write-Host '---Installation du module AD'
+            Add-WindowsCapability -Online -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0
+            Write-Host '---Module AD installé'
+            return
+        }
         $version = 'Windows 10'
         $targets = @('WindowsTH-KB2693643-x64.msu', 'WindowsTH-KB2693643-x86.msu')
         $RSAT = 'KB2693643'
-    # Windows 7 has another file to run
+    # Windows 7 has a different file to run
     } ElseIf($caption -like '*Windows 7*') {
         $version = 'Windows 7'
         $targets = @('Windows6.1-KB958830-x64-RefreshPkg.msu', 'Windows6.1-KB958830-x86-RefreshPkg.msu')
         $RSAT = 'KB958830'
     # Not Windows 7 or Windows 10, no file to run
     } Else {
-        Write-Warning "Votre système d'exploitation n'est pas fait pour ceci"
-        $RSAT = ' '
-        $version = $false
+        Write-Warning "Votre système d'exploitation n'est pas supporté"
+        return
     }
 
     $install = !(Get-HotFix -Id $RSAT -ErrorAction SilentlyContinue)
