@@ -35,10 +35,9 @@
             this.line = new System.Windows.Forms.Label();
             this.label_groups = new System.Windows.Forms.Label();
             this.groups_list = new System.Windows.Forms.TextBox();
-            this.applications_list = new System.Windows.Forms.ComboBox();
             this.application_statue = new System.Windows.Forms.TextBox();
             this.label_check_access = new System.Windows.Forms.Label();
-            this.check_app = new System.Windows.Forms.Button();
+            this.lb_applications = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // username
@@ -90,7 +89,7 @@
             // label_groups
             // 
             this.label_groups.AutoSize = true;
-            this.label_groups.Location = new System.Drawing.Point(311, 55);
+            this.label_groups.Location = new System.Drawing.Point(314, 35);
             this.label_groups.Name = "label_groups";
             this.label_groups.Size = new System.Drawing.Size(47, 13);
             this.label_groups.TabIndex = 5;
@@ -98,64 +97,50 @@
             // 
             // groups_list
             // 
-            this.groups_list.Location = new System.Drawing.Point(314, 74);
+            this.groups_list.Location = new System.Drawing.Point(314, 55);
             this.groups_list.Multiline = true;
             this.groups_list.Name = "groups_list";
             this.groups_list.ReadOnly = true;
             this.groups_list.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.groups_list.Size = new System.Drawing.Size(212, 143);
+            this.groups_list.Size = new System.Drawing.Size(212, 162);
             this.groups_list.TabIndex = 6;
-            // 
-            // applications_list
-            // 
-            this.applications_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.applications_list.FormattingEnabled = true;
-            this.applications_list.Items.AddRange(new object[] {
-            "SAI"});
-            this.applications_list.Location = new System.Drawing.Point(532, 74);
-            this.applications_list.Name = "applications_list";
-            this.applications_list.Size = new System.Drawing.Size(131, 21);
-            this.applications_list.TabIndex = 7;
             // 
             // application_statue
             // 
             this.application_statue.AcceptsTab = true;
-            this.application_statue.Location = new System.Drawing.Point(532, 101);
+            this.application_statue.Location = new System.Drawing.Point(532, 130);
             this.application_statue.Multiline = true;
             this.application_statue.Name = "application_statue";
             this.application_statue.ReadOnly = true;
             this.application_statue.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.application_statue.Size = new System.Drawing.Size(212, 116);
+            this.application_statue.Size = new System.Drawing.Size(212, 87);
             this.application_statue.TabIndex = 8;
             // 
             // label_check_access
             // 
             this.label_check_access.AutoSize = true;
-            this.label_check_access.Location = new System.Drawing.Point(529, 55);
+            this.label_check_access.Location = new System.Drawing.Point(529, 35);
             this.label_check_access.Name = "label_check_access";
             this.label_check_access.Size = new System.Drawing.Size(130, 13);
             this.label_check_access.TabIndex = 9;
             this.label_check_access.Text = "Vérifier accès applications";
             // 
-            // check_app
+            // lb_applications
             // 
-            this.check_app.Location = new System.Drawing.Point(669, 74);
-            this.check_app.Name = "check_app";
-            this.check_app.Size = new System.Drawing.Size(75, 23);
-            this.check_app.TabIndex = 10;
-            this.check_app.Text = "Tester";
-            this.check_app.UseVisualStyleBackColor = true;
-            this.check_app.Click += new System.EventHandler(this.Check_app_Click);
+            this.lb_applications.FormattingEnabled = true;
+            this.lb_applications.Location = new System.Drawing.Point(532, 55);
+            this.lb_applications.Name = "lb_applications";
+            this.lb_applications.Size = new System.Drawing.Size(212, 69);
+            this.lb_applications.TabIndex = 10;
+            this.lb_applications.SelectedIndexChanged += new System.EventHandler(this.lb_applications_SelectedIndexChanged);
             // 
             // RetreiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.check_app);
             this.Controls.Add(this.label_check_access);
             this.Controls.Add(this.application_statue);
-            this.Controls.Add(this.applications_list);
             this.Controls.Add(this.groups_list);
             this.Controls.Add(this.label_groups);
             this.Controls.Add(this.line);
@@ -163,6 +148,7 @@
             this.Controls.Add(this.btn_search);
             this.Controls.Add(this.label_username);
             this.Controls.Add(this.username);
+            this.Controls.Add(this.lb_applications);
             this.Name = "RetreiveForm";
             this.Text = "Voir les informations d\'un utilisateur";
             this.ResumeLayout(false);
@@ -179,10 +165,9 @@
         private System.Windows.Forms.Label line;
         private System.Windows.Forms.Label label_groups;
         private System.Windows.Forms.TextBox groups_list;
-        private System.Windows.Forms.ComboBox applications_list;
         private System.Windows.Forms.TextBox application_statue;
         private System.Windows.Forms.Label label_check_access;
-        private System.Windows.Forms.Button check_app;
+        private System.Windows.Forms.ListBox lb_applications;
     }
 }
 

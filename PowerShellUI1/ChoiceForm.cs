@@ -42,7 +42,7 @@ namespace PowerShellUI1
             }
 
             // Get the current path
-            Path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            Path = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
             // Go upward until in AD_interface
             while (!Directory.Exists(Path + Utilities.ScriptSubfolder))
             {
@@ -51,10 +51,10 @@ namespace PowerShellUI1
                 if (Path.EndsWith(":"))
                 { // Could not find \Scripts, exit application
                     _ = MessageBox.Show("Le dossier \\Scripts n'a pas été trouvé dans le dossier du l'application ou un dossier parent.");
-                    if (Application.MessageLoop)
+                    if (System.Windows.Forms.Application.MessageLoop)
                     {
                         // WinForms app
-                        Application.Exit();
+                        System.Windows.Forms.Application.Exit();
                     }
                     else
                     {
@@ -78,7 +78,7 @@ namespace PowerShellUI1
         {
             if (retreiveData == null || retreiveData.IsDisposed)
             {
-                retreiveData = new RetreiveForm(/*Path*/);
+                retreiveData = new RetreiveForm(Path);
             }
 
             retreiveData.Show();

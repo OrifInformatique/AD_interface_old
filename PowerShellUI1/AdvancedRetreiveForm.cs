@@ -66,7 +66,7 @@ namespace PowerShellUI1
 
             if (path == null)
             {
-                path = Path.GetDirectoryName(Application.ExecutablePath);
+                path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
                 // Go upward until in AD_interface
                 while (!Directory.Exists(path + Utilities.ScriptSubfolder))
                 {

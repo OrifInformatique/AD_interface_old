@@ -83,6 +83,7 @@
     <Compile Include="ChoiceForm.Designer.cs">
       <DependentUpon>ChoiceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Application.cs" />
     <Compile Include="RetreiveForm.cs">
       <SubType>Form</SubType>
     </Compile>

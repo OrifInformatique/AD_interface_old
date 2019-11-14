@@ -35,7 +35,7 @@ namespace PowerShellUI1
             InitializeComponent();
             if (path == null)
             {
-                path = Path.GetDirectoryName(Application.ExecutablePath);
+                path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
                 // Go upward until \scripts is found
                 while (!Directory.Exists(path + Utilities.ScriptSubfolder))
                 {
