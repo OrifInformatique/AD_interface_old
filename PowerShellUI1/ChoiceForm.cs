@@ -78,7 +78,7 @@ namespace PowerShellUI1
         {
             if (retreiveData == null || retreiveData.IsDisposed)
             {
-                retreiveData = new RetreiveForm(Path);
+                retreiveData = new RetreiveForm(/*Path*/);
             }
 
             retreiveData.Show();
