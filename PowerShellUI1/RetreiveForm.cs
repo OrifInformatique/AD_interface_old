@@ -101,25 +101,6 @@ namespace PowerShellUI1
         }
 
         /// <summary>
-        /// Checks that a group can access an application
-        /// </summary>
-        /// <param name="groupName">The name of the group</param>
-        /// <param name="application">The name of the application</param>
-        /// <returns>True if the group can access</returns>
-        private static bool CheckGroupApplication(string groupName, string application)
-        {
-            string[] nameParts = groupName.Split('-');
-            if (nameParts.Length >= 2)
-            {
-                return nameParts[0] == "GS" && nameParts[1] == application;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Verifies that an application can be accessed by any group
         /// </summary>
         /// <param name="application">The application to be checked</param>
@@ -141,13 +122,16 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void SearchEnter(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            switch (e.KeyCode)
             {
-                Search(sender, e);
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                return;
+                default:
+                    return;
+                case Keys.Enter:
+                    Search(sender, e);
+                    break;
             }
+            e.Handled = true;
+            e.SuppressKeyPress = true;
         }
 
         /// <summary>
@@ -212,6 +196,8 @@ namespace PowerShellUI1
                 }
             }
 
+            // This part doesn't work and never did
+            // even though we think it did
             BindingList<string> b = new BindingList<string>();
             foreach (string v in apps.Keys)
             {
@@ -233,7 +219,7 @@ namespace PowerShellUI1
             Application_status.Text = "";
             foreach (string group in groupsList)
             {
-                if (CheckGroupApplication(group, ((Application) Lb_applications.SelectedItem).Abreviation))
+                if (group.StartsWith("GS-" + (Lb_applications.SelectedItem as Application).Abreviation))
                 {
                     Application_status.Text += group + Environment.NewLine;
                 }
