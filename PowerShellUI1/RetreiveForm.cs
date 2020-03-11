@@ -126,8 +126,9 @@ namespace PowerShellUI1
             {
                 default:
                     return;
+
                 case Keys.Enter:
-                    Search(sender, e);
+                    Search(null, null);
                     break;
             }
             e.Handled = true;
@@ -196,8 +197,6 @@ namespace PowerShellUI1
                 }
             }
 
-            // This part doesn't work and never did
-            // even though we think it did
             BindingList<string> b = new BindingList<string>();
             foreach (string v in apps.Keys)
             {
@@ -219,7 +218,7 @@ namespace PowerShellUI1
             Application_status.Text = "";
             foreach (string group in groupsList)
             {
-                if (group.StartsWith("GS-" + (Lb_applications.SelectedItem as Application).Abreviation))
+                if (group.StartsWith("GS-" + (Lb_applications.SelectedItem as string)))
                 {
                     Application_status.Text += group + Environment.NewLine;
                 }
