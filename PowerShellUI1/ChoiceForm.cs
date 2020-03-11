@@ -44,7 +44,7 @@ namespace PowerShellUI1
             // Get the current path
             Path = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
             // Go upward until in AD_interface
-            while (!Directory.Exists(Path + Utilities.ScriptSubfolder))
+            while (!Directory.Exists(Path + Utilities.SCRIPT_SUBFOLDER))
             {
                 int index = Path.LastIndexOf("\\");
                 Path = Path.Substring(0, index);

@@ -15,7 +15,7 @@ namespace PowerShellUI1
         /// <summary>
         /// The subfolder containing all the scripts
         /// </summary>
-        private static string ScriptSubfolder => Utilities.ScriptSubfolder;
+        private static string ScriptSubfolder => Utilities.SCRIPT_SUBFOLDER;
 
         /// <summary>
         /// Path to AD_Interface folder
@@ -61,7 +61,7 @@ namespace PowerShellUI1
             {
                 path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
                 // Go upward until in AD_interface
-                while (!Directory.Exists(path + Utilities.ScriptSubfolder))
+                while (!Directory.Exists(path + Utilities.SCRIPT_SUBFOLDER))
                 {
                     int index = path.LastIndexOf("\\");
                     path = path.Substring(0, index);

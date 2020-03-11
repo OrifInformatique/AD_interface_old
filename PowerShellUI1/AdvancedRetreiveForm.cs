@@ -18,7 +18,7 @@ namespace PowerShellUI1
         #region Readonly
 
         // Name of the folder containing the scripts
-        private readonly string scriptSubfolder = Utilities.ScriptSubfolder,
+        private readonly string scriptSubfolder = Utilities.SCRIPT_SUBFOLDER,
             // Path to scripts
             path = ChoiceForm.Path;
 
@@ -68,7 +68,7 @@ namespace PowerShellUI1
             {
                 path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
                 // Go upward until in AD_interface
-                while (!Directory.Exists(path + Utilities.ScriptSubfolder))
+                while (!Directory.Exists(path + Utilities.SCRIPT_SUBFOLDER))
                 {
                     int index = path.LastIndexOf("\\");
                     path = path.Substring(0, index);
@@ -294,10 +294,10 @@ namespace PowerShellUI1
                     }
                 }
 
-                result += Environment.NewLine + Utilities.ResultEntrySeparator + Environment.NewLine + Environment.NewLine;
+                result += Environment.NewLine + Utilities.RESULT_ENTRY_SEPARATOR + Environment.NewLine + Environment.NewLine;
             }
 
-            return result.Substring(0, result.LastIndexOf(Utilities.ResultEntrySeparator)).Trim();
+            return result.Substring(0, result.LastIndexOf(Utilities.RESULT_ENTRY_SEPARATOR)).Trim();
         }
 
         #endregion Main methods

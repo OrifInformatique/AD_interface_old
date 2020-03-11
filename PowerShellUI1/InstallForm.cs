@@ -14,7 +14,7 @@ namespace PowerShellUI1
         #region Variables
 
         private readonly string path = ChoiceForm.Path,
-            scriptSubfolder = Utilities.ScriptSubfolder;
+            scriptSubfolder = Utilities.SCRIPT_SUBFOLDER;
 
         /// <summary>
         /// Whether or not the ActiveDirectory module is installed.
@@ -51,7 +51,7 @@ namespace PowerShellUI1
             {
                 path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
                 // Go upward until in AD_interface
-                while (!Directory.Exists(path + Utilities.ScriptSubfolder))
+                while (!Directory.Exists(path + Utilities.SCRIPT_SUBFOLDER))
                 {
                     int index = path.LastIndexOf("\\");
                     path = path.Substring(0, index);

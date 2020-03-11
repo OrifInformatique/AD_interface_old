@@ -14,12 +14,12 @@ namespace PowerShellUI1
         /// <summary>
         /// The subfolder containing all scripts.
         /// </summary>
-        public static string ScriptSubfolder => "\\Scripts\\";
+        public const string SCRIPT_SUBFOLDER = "\\Scripts\\";
 
         /// <summary>
         /// String that separates the multiple entries.
         /// </summary>
-        public static string ResultEntrySeparator => "――――――";
+        public const string RESULT_ENTRY_SEPARATOR = "――――――";
 
         /// <summary>
         /// Obtains the output from a powershell script.

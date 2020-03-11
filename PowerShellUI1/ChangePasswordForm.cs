@@ -13,7 +13,7 @@ namespace PowerShellUI1
         #region Variables
 
         private readonly string path = ChoiceForm.Path,
-            scriptSubfolder = Utilities.ScriptSubfolder;
+            scriptSubfolder = Utilities.SCRIPT_SUBFOLDER;
 
         // Tooltip object
         private readonly ToolTip tooltip = new ToolTip();
@@ -37,7 +37,7 @@ namespace PowerShellUI1
             {
                 path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
                 // Go upward until \scripts is found
-                while (!Directory.Exists(path + Utilities.ScriptSubfolder))
+                while (!Directory.Exists(path + Utilities.SCRIPT_SUBFOLDER))
                 {
                     int index = path.LastIndexOf("\\");
                     path = path.Substring(0, index);
