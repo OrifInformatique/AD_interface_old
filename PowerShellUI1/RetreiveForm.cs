@@ -10,11 +10,26 @@ namespace PowerShellUI1
 {
     public partial class RetreiveForm : Form
     {
-        private readonly string scriptSubfolder = Utilities.ScriptSubfolder, path = ChoiceForm.Path;
+        #region Variables
 
-        private readonly Dictionary<string, string> userProperties = new Dictionary<string, string>() { };
+        /// <summary>
+        /// The subfolder containing all the scripts
+        /// </summary>
+        private static string ScriptSubfolder => Utilities.ScriptSubfolder;
+
+        /// <summary>
+        /// Path to AD_Interface folder
+        /// </summary>
+        private readonly string path = ChoiceForm.Path;
+
+        /// <summary>
+        /// List of ther user's groups
+        /// </summary>
         private readonly List<string> groupsList = new List<string>();
 
+        /// <summary>
+        /// Converts allowed applications from acronym to full text
+        /// </summary>
         private readonly List<Application> applications = new List<Application>(new Application[] {
             new Application("AD", "Active Directory"),
             new Application("AC", "AIRS Capture"),
@@ -32,7 +47,13 @@ namespace PowerShellUI1
             new Application("WIFI", "Wi-Fi")
         });
 
+        #endregion Variables
 
+        #region Constructors
+
+        /// <summary>
+        /// Creates a new RetreiveForm
+        /// </summary>
         public RetreiveForm()
         {
             InitializeComponent();
@@ -47,123 +68,44 @@ namespace PowerShellUI1
                 }
             }
 
-            lb_applications.ValueMember = "abreviation";
-            lb_applications.DisplayMember = "name";
+            Lb_applications.ValueMember = "abreviation";
+            Lb_applications.DisplayMember = "name";
         }
 
+        /// <summary>
+        /// Creates a new RetreiveForm
+        /// </summary>
+        /// <param name="path">Path to base file</param>
         public RetreiveForm(string path)
         {
             InitializeComponent();
             this.path = path;
 
-            lb_applications.ValueMember = "abreviation";
-            lb_applications.DisplayMember = "name";
+            Lb_applications.ValueMember = "abreviation";
+            Lb_applications.DisplayMember = "name";
         }
 
-        private void SearchEnter(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                Search(sender, e);
-            }
-        }
+        #endregion Constructors
 
-        private void Search(object sender, EventArgs e)
-        {
-            try
-            {
-                groups_list.Text = "";
-                output.Text = "";
-                application_statue.Text = "";
-                Collection<PSObject> users, groups;
-                string scriptUser = StoreScript("getUser.ps1").Replace("{identifiant}", username.Text),
-                scriptGroups = StoreScript("getGroups.ps1").Replace("{identifiant}", username.Text);
+        #region Methods
 
-                userProperties.Clear();
-                groupsList.Clear();
-
-                using (PowerShell ps = PowerShell.Create())
-                {
-                    users = ps.AddScript(scriptUser).Invoke();
-                }
-                using (PowerShell ps = PowerShell.Create())
-                {
-                    groups = ps.AddScript(scriptGroups).Invoke();
-                }
-
-                foreach (PSObject user in users)
-                {
-                    string[] lines = (user + "").Split('\n');
-                    foreach (string line in lines)
-                    {
-                        string[] split = line.Split(':');
-                        if (split.Length > 1)
-                        {
-                            split[0] = split[0].Trim();
-                            split[1] = split[1].Trim();
-                            userProperties.Add(split[0], split[1]);
-                            output.Text += split[0] + " : " + split[1] + Environment.NewLine;
-                        }
-                    }
-                }
-
-                if (output.Text.Length == 0)
-                {
-                    output.Text = "Utilisateur introuvable";
-                }
-
-                foreach (PSObject group in groups)
-                {
-                    string[] lines = (group + "").Split('\n');
-                    foreach (string line in lines)
-                    {
-                        string[] split = line.Split(':');
-                        if (split.Length > 1)
-                        {
-                            split[0] = split[0].Trim();
-                            split[1] = split[1].Trim();
-                            if (split[0] == "name")
-                            {
-                                groupsList.Add(split[1]);
-                                groups_list.Text += split[1] + Environment.NewLine;
-                            }
-                        }
-                    }
-                }
-                lb_applications.DataSource = new BindingList<Application>(applications.FindAll(item => CheckApplication(item.abreviation)));
-            }
-            catch
-            {
-                groups_list.Text = "";
-                output.Text = "Erreur rencontrée";
-                userProperties.Clear();
-                groupsList.Clear();
-                lb_applications.DataSource = new BindingList<Application>();
-            }
-        }
-
+        /// <summary>
+        /// Returns the contents of a file in the script folder
+        /// </summary>
+        /// <param name="filename">Name of the file</param>
+        /// <returns>The file's contents</returns>
         private string StoreScript(string filename)
         {
-            try
-            {
-                using (StreamReader strReader = new StreamReader(path + scriptSubfolder + filename))
-                {
-                    Console.WriteLine(path + scriptSubfolder + filename);
-                    return strReader.ReadToEnd();
-                }
-            }
-            catch
-            {
-                return null;
-            }
+            return Utilities.GetFileContents(path + ScriptSubfolder + filename);
         }
 
-        private void Check_condition(bool condition, string text)
-        {
-            application_statue.Text += text + "\t" + (condition ? "OK" : "Echec") + Environment.NewLine;
-        }
-
-        private bool CheckGroupApplication(string groupName, string application)
+        /// <summary>
+        /// Checks that a group can access an application
+        /// </summary>
+        /// <param name="groupName">The name of the group</param>
+        /// <param name="application">The name of the application</param>
+        /// <returns>True if the group can access</returns>
+        private static bool CheckGroupApplication(string groupName, string application)
         {
             string[] nameParts = groupName.Split('-');
             if (nameParts.Length >= 2)
@@ -176,6 +118,11 @@ namespace PowerShellUI1
             }
         }
 
+        /// <summary>
+        /// Verifies that an application can be accessed by any group
+        /// </summary>
+        /// <param name="application">The application to be checked</param>
+        /// <returns>True if the the application can be accessed, false otherwise</returns>
         private bool CheckApplication(string application)
         {
             foreach (string group in groupsList)
@@ -188,16 +135,108 @@ namespace PowerShellUI1
             return false;
         }
 
-        private void lb_applications_SelectedIndexChanged(object sender, EventArgs e)
+        #endregion Methods
+
+        #region Events
+
+        /// <summary>
+        /// Calls Search when the user presses enter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SearchEnter(object sender, KeyEventArgs e)
         {
-            application_statue.Text = "";
+            if (e.KeyCode == Keys.Enter)
+            {
+                Search(sender, e);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Displays all informations about the entered user
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Search(object sender, EventArgs e)
+        {
+            Groups_list.Text = "";
+            Output.Text = "";
+            Application_status.Text = "";
+            Collection<PSObject> users, groups;
+            string scriptUser = StoreScript("getUser.ps1").Replace("{identifiant}", Username.Text),
+            scriptGroups = StoreScript("getGroups.ps1").Replace("{identifiant}", Username.Text);
+
+            groupsList.Clear();
+
+            using (PowerShell ps = PowerShell.Create())
+            {
+                users = ps.AddScript(scriptUser).Invoke();
+            }
+            foreach (PSObject user in users)
+            {
+                string[] lines = (user + "").Split('\n');
+                foreach (string line in lines)
+                {
+                    string[] split = line.Split(':');
+                    if (split.Length > 1)
+                    {
+                        split[0] = split[0].Trim();
+                        split[1] = split[1].Trim();
+                        Output.Text += split[0] + " : " + split[1] + Environment.NewLine;
+                    }
+                }
+            }
+            if (Output.Text.Length == 0)
+            {
+                Output.Text = "Utilisateur introuvable";
+            }
+
+            using (PowerShell ps = PowerShell.Create())
+            {
+                groups = ps.AddScript(scriptGroups).Invoke();
+            }
+            foreach (PSObject group in groups)
+            {
+                string[] lines = (group + "").Split('\n');
+                foreach (string line in lines)
+                {
+                    string[] split = line.Split(':');
+                    if (split.Length > 1)
+                    {
+                        split[0] = split[0].Trim();
+                        split[1] = split[1].Trim();
+                        if (split[0] == "name")
+                        {
+                            groupsList.Add(split[1]);
+                            Groups_list.Text += split[1] + Environment.NewLine;
+                        }
+                    }
+                }
+            }
+
+            Lb_applications.DataSource = new BindingList<Application>(applications.FindAll(item => CheckApplication(item.Abreviation)));
+        }
+
+        /// <summary>
+        /// Adds all groups the user is part of in Application_status
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListAllGroups(object sender, EventArgs e)
+        {
+            Application_status.Text = "";
             foreach (string group in groupsList)
             {
-                if(CheckGroupApplication(group, ((Application)lb_applications.SelectedItem).abreviation))
+                if (CheckGroupApplication(group, ((Application) Lb_applications.SelectedItem).Abreviation))
                 {
-                    application_statue.Text += group + Environment.NewLine;
+                    Application_status.Text += group + Environment.NewLine;
                 }
             }
         }
+
+        #endregion Events
     }
 }

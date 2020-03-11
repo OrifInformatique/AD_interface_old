@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Management.Automation;
+using System.Text;
 
 namespace PowerShellUI1
 {
@@ -27,19 +28,19 @@ namespace PowerShellUI1
         /// <returns>Output of the script</returns>
         public static string GetScriptResults(string script)
         {
-            string res = "";
+            StringBuilder res = new StringBuilder();
             // Create a new PowerShell, load the script, launch it and obtain the output
             using (PowerShell ps = PowerShell.Create().AddScript(script))
             {
                 // Get results from the PowerShell
-                var results = ps.Invoke();
+                System.Collections.ObjectModel.Collection<PSObject> results = ps.Invoke();
                 foreach (PSObject result in results)
                 {
                     // Add the results to the return value
-                    res += result;
+                    _ = res.Append(result);
                 }
             }
-            return res;
+            return res.ToString();
         }
 
         /// <summary>
