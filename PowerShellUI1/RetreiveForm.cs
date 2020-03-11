@@ -30,22 +30,23 @@ namespace PowerShellUI1
         /// <summary>
         /// Converts allowed applications from acronym to full text
         /// </summary>
-        private readonly List<Application> applications = new List<Application>(new Application[] {
-            new Application("AD", "Active Directory"),
-            new Application("AC", "AIRS Capture"),
-            new Application("AS", "AIRS Dossier"),
-            new Application("EV", "EasyVista"),
-            new Application("EX", "Exchange"),
-            new Application("FS", "Files System"),
-            new Application("GE", "Générique"),
-            new Application("JX", "Jedox (Gestion des budgets)"),
-            new Application("MO", "MonOrif"),
-            new Application("RH", "Dossier RH sur Sharepoint"),
-            new Application("SP", "SharePoint (OrifIntra)"),
-            new Application("SG", "Sigem"),
-            new Application("VPN", "VPN"),
-            new Application("WIFI", "Wi-Fi")
-        });
+        private readonly Dictionary<string, string> apps = new Dictionary<string, string>
+        {
+            { "AD" , "Active Directory" },
+            { "AC" , "AIRS Capture" },
+            { "AS" , "AIRS Dossier" },
+            { "EV" , "EasyVista" },
+            { "EX" , "Exchange" },
+            { "FS" , "Files System" },
+            { "GE" , "Générique" },
+            { "JX" , "Jedox (Gestion des budgets)" },
+            { "MO" , "MonOrif" },
+            { "RH" , "Dossier RH sur Sharepoint" },
+            { "SP" , "SharePoint (OrifIntra)" },
+            { "SG" , "Sigem" },
+            { "VPN" , "VPN" },
+            { "WIFI" , "Wi-Fi" }
+        };
 
         #endregion Variables
 
@@ -125,14 +126,8 @@ namespace PowerShellUI1
         /// <returns>True if the the application can be accessed, false otherwise</returns>
         private bool CheckApplication(string application)
         {
-            foreach (string group in groupsList)
-            {
-                if (CheckGroupApplication(group, application))
-                {
-                    return true;
-                }
-            }
-            return false;
+            string name = "GS-" + application;
+            return groupsList.FindAll(group => group.StartsWith(name)).Count > 0;
         }
 
         #endregion Methods
@@ -217,7 +212,15 @@ namespace PowerShellUI1
                 }
             }
 
-            Lb_applications.DataSource = new BindingList<Application>(applications.FindAll(item => CheckApplication(item.Abreviation)));
+            BindingList<string> b = new BindingList<string>();
+            foreach (string v in apps.Keys)
+            {
+                if (CheckApplication(v))
+                {
+                    b.Add(apps[v]);
+                }
+            }
+            Lb_applications.DataSource = b;
         }
 
         /// <summary>
