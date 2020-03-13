@@ -235,7 +235,10 @@ namespace PowerShellUI1
                             .Replace(",", "\n\t")
                             .Replace("=", " = ");
                     }
-                    dict.Add(key, value);
+                    if (!dict.ContainsKey(key))
+                    {
+                        dict.Add(key, value);
+                    }
                 }
                 slicedItems[index] = dict;
                 index++;
