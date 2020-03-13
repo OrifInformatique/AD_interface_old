@@ -164,7 +164,7 @@ namespace PowerShellUI1
                     {
                         FileName = "powershell.exe",
                         Verb = "runas",
-                        Arguments = $"set-executionpolicy unrestricted -force;\r\n{targetfolder + InstallScript}"
+                        Arguments = $"set-executionpolicy unrestricted -scope currentuser;\r\n{targetfolder + InstallScript}"
                     }
                 })
                 {
