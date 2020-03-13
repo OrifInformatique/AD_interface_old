@@ -39,7 +39,7 @@
             this.installBtn.Name = "installBtn";
             this.installBtn.Size = new System.Drawing.Size(277, 62);
             this.installBtn.TabIndex = 0;
-            this.installBtn.Text = "Installer les choses requises pour l\'application";
+            this.installBtn.Text = "Installer les modules requis pour l\'application";
             this.installBtn.UseVisualStyleBackColor = true;
             this.installBtn.Click += new System.EventHandler(this.InstallADModulePowershell);
             this.installBtn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InstallOnEnter);
