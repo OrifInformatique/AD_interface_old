@@ -32,6 +32,14 @@ Function Install-ADModule {
         # From 1809 the file isn't needed to be downloaded anymore, just activate it
         If([int](Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion').ReleaseId -ge 1809) {
             Write-Host '---Installation du module AD'
+
+            $currentWU = Get-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "UseWUServer" | select -ExpandProperty UseWUServer
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "UseWUServer" -Value 0
+            Restart-Service wuauserv
+            Get-WindowsCapability -Name RSAT* -Online | Add-WindowsCapability -Online
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "UseWUServer" -Value $currentWU
+            Restart-Service wuauserv
+            
             Add-WindowsCapability -Online -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0
             Write-Host '---Module AD installé'
             return

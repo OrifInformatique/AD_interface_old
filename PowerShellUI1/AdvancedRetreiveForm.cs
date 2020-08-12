@@ -84,7 +84,7 @@ namespace PowerShellUI1
                     {
                         FileName = "powershell.exe",
                         Verb = "runas",
-                        Arguments = "(Get-ADUser -Filter 'samAccountName -like \"*\"' -Properties *)[0].propertynames",
+                        Arguments = "(Get-ADUser -Identity \"" + Environment.UserName + "\" -Properties *).propertynames | Out-String",
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
                         UseShellExecute = false
@@ -114,7 +114,7 @@ namespace PowerShellUI1
 
             if (Props == null)
             {
-                string result = Utilities.GetScriptResults("(Get-ADUser -Filter 'samAccountName -like \"*\"' -Properties *)[0].propertynames | Out-String");
+                string result = Utilities.GetScriptResults("(Get-ADUser -Identity \"" + Environment.UserName + "\" -Properties *).propertynames | Out-String");
                 Props = result.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             }
             SetBoxesValues();
