@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -173,7 +174,8 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void DisplayResultWindow(object sender = null, EventArgs e = null)
         {
-            string script = GetBaseScript().Replace("Out-String", "Out-Gridview -Title 'Informations sur les utilisateurs'");
+            string properties = string.Join(",", DisplayCheckBox.CheckedItems.Cast<string>().ToArray());
+            string script = GetBaseScript().Replace("Out-String", "Select-Object -Property " + (properties == "" ? "*" : properties) + " | Out-Gridview -Title 'Informations sur les utilisateurs'");
             // Display window
             _ = Utilities.GetScriptResults(script);
         }
