@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -84,7 +85,7 @@ namespace PowerShellUI1
                     {
                         FileName = "powershell.exe",
                         Verb = "runas",
-                        Arguments = "(Get-ADUser -Filter 'samAccountName -like \"*\"' -Properties *)[0].propertynames",
+                        Arguments = "(Get-ADUser -Identity \"" + Environment.UserName + "\" -Properties *).propertynames | Out-String",
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
                         UseShellExecute = false
@@ -114,7 +115,7 @@ namespace PowerShellUI1
 
             if (Props == null)
             {
-                string result = Utilities.GetScriptResults("(Get-ADUser -Filter 'samAccountName -like \"*\"' -Properties *)[0].propertynames | Out-String");
+                string result = Utilities.GetScriptResults("(Get-ADUser -Identity \"" + Environment.UserName + "\" -Properties *).propertynames | Out-String");
                 Props = result.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             }
             SetBoxesValues();
@@ -173,7 +174,8 @@ namespace PowerShellUI1
         /// <param name="e"></param>
         private void DisplayResultWindow(object sender = null, EventArgs e = null)
         {
-            string script = GetBaseScript().Replace("Out-String", "Out-Gridview -Title 'Informations sur les utilisateurs'");
+            string properties = string.Join(",", DisplayCheckBox.CheckedItems.Cast<string>().ToArray());
+            string script = GetBaseScript().Replace("Out-String", "Select-Object -Property " + (properties == "" ? "*" : properties) + " | Out-Gridview -Title 'Informations sur les utilisateurs'");
             // Display window
             _ = Utilities.GetScriptResults(script);
         }
