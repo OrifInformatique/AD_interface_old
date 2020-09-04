@@ -4,7 +4,7 @@
 <ul>
     @foreach (var group in ViewBag.groups)
     {
-        <li><a onclick="javascript:getSubGroups(this);" data-distinguished-name="@group.Properties["distinguishedName"].Value"><i class="fas fa-caret-right"></i></a> @group.Properties["cn"].Value <a href="~/Info/Group/@group.Properties["samAccountName"].Value"><i class="fas fa-external-link-alt"></i></a></li>
+        <li><a onclick="javascript:getSubGroups(this);" data-sam-account-name="@group.PropertyToString("samAccountName")"><i class="fas fa-caret-right"></i></a> @group.PropertyToString("samAccountName") <a href="~/Info/DetailGroup/@group.PropertyToString("samAccountName")/0"><i class="fas fa-external-link-alt"></i></a></li>
     }
     @if (ViewBag.groups.Length == 0)
     {
