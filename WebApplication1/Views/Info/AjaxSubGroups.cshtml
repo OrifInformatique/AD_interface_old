@@ -1,0 +1,13 @@
+﻿@{
+    Layout = null;
+}
+<ul>
+    @foreach (var group in ViewBag.groups)
+    {
+        <li><a onclick="javascript:getSubGroups(this);" data-distinguished-name="@group.Properties["distinguishedName"].Value"><i class="fas fa-caret-right"></i></a> @group.Properties["cn"].Value <a href="~/Info/Group/@group.Properties["samAccountName"].Value"><i class="fas fa-external-link-alt"></i></a></li>
+    }
+    @if (ViewBag.groups.Length == 0)
+    {
+        <li>...</li>
+    }
+</ul>
