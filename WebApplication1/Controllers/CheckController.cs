@@ -86,5 +86,20 @@ namespace WebApplication1.Controllers
             ViewBag.Users = users;
             return View();
         }
+
+
+        public ActionResult GroupsDescription()
+        {
+            List<GroupModel> groups = new List<GroupModel>();
+            DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+            adSearcher.Filter = "(&(!description=*)(objectCategory=group))";
+            SearchResultCollection coll = adSearcher.FindAll();
+            foreach (SearchResult item in coll)
+            {
+                groups.Add(new GroupModel(item.GetDirectoryEntry()));
+            }
+            ViewBag.Groups = groups;
+            return View();
+        }
     }
 }

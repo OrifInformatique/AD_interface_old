@@ -248,6 +248,7 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\User.cshtml" />
     <Content Include="Views\Check\DuplicatePhone.cshtml" />
+    <Content Include="Views\Check\GroupsDescription.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
