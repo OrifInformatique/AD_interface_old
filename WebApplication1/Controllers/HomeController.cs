@@ -8,6 +8,9 @@ using WebApplication1.Properties;
 
 namespace WebApplication1.Controllers
 {
+    /// <summary>
+    /// WIP Controller for login
+    /// </summary>
     public class HomeController : Controller
     {
         public ActionResult Index()
