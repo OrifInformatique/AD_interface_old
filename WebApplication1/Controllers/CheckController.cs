@@ -95,6 +95,10 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Displays a list of groups that do not have a description
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GroupsDescription()
         {
             List<GroupModel> groups = new List<GroupModel>();
