@@ -9,11 +9,10 @@ namespace WebApplication1.Controllers
 {
     public class CheckController : Controller
     {
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        /// <summary>
+        /// Displays a list of users that are not part of both the `SAIUSER` AD group and not in any of the GGDAC groups
+        /// </summary>
+        /// <returns></returns>
         public ActionResult SAIGroup()
         {
             List<Principal> users = new List<Principal>();
@@ -31,6 +30,11 @@ namespace WebApplication1.Controllers
             foreach (string saiGroup in saiGroups)
             {
                 GroupPrincipal group = GroupPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, Settings.Default.ADPath), saiGroup);
+                if (group is null)
+                {
+                    continue;
+                }
+
                 foreach (Principal member in group.Members)
                 {
                     if (member is GroupPrincipal)
@@ -56,6 +60,10 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Displays a list of users that share the same phone number
+        /// </summary>
+        /// <returns></returns>
         public ActionResult DuplicatePhone()
         {
             Dictionary<string, UserModel> phones = new Dictionary<string, UserModel>();
@@ -86,7 +94,6 @@ namespace WebApplication1.Controllers
             ViewBag.Users = users;
             return View();
         }
-
 
         public ActionResult GroupsDescription()
         {
