@@ -37,22 +37,16 @@ namespace WebApplication1.Controllers
 
                 foreach (Principal member in group.Members)
                 {
-                    if (member is GroupPrincipal)
+                    if (member is GroupPrincipal && !member.IsMemberOf(saiUserGroup))
                     {
-                        if (!member.IsMemberOf(saiUserGroup))
-                        {
-                            users.Add(member);
-                        }
+                        users.Add(member);
                     }
                 }
                 foreach (Principal member in saiUserGroup.Members)
                 {
-                    if (member is GroupPrincipal)
+                    if (member is GroupPrincipal && !member.IsMemberOf(group))
                     {
-                        if (!member.IsMemberOf(group))
-                        {
-                            users.Add(member);
-                        }
+                        users.Add(member);
                     }
                 }
             }
