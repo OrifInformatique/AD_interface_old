@@ -96,12 +96,17 @@ namespace WebApplication1.Controllers
         public ActionResult GroupsDescription()
         {
             List<GroupModel> groups = new List<GroupModel>();
+            List<ErrorModel> errors = new List<ErrorModel>();
             DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
             adSearcher.Filter = "(&(!description=*)(objectCategory=group))";
             SearchResultCollection coll = adSearcher.FindAll();
             foreach (SearchResult item in coll)
             {
-                groups.Add(new GroupModel(item.GetDirectoryEntry()));
+                GroupModel group = new GroupModel(item.GetDirectoryEntry());
+                groups.Add(group);
+                ErrorModel error = new ErrorModel(group.PropertyToString("samAccountName"), "", "description", "", "", "Not empty", "");
+                errors.Add(error);
+                error.InsertOrUpdate();
             }
             ViewBag.Groups = groups;
             return View();
