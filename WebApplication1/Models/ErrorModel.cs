@@ -69,7 +69,6 @@ namespace WebApplication1.Models
                     {
                         id = -1;
                     }
-                    System.Diagnostics.Debug.WriteLine(id);
                 }
             }
             catch (Exception e)
@@ -165,7 +164,8 @@ namespace WebApplication1.Models
             {
                 SqlCommand cmd = conn.CreateCommand();
                 cmd.CommandText = "INSERT INTO t_errors(samaccountname_a, samaccountname_b, field_a, field_b, value_a, expected_value_a, value_b)"
-                    + " VALUES(@samaccountname_a, @samaccountname_b, @field_a, @field_b, @value_a, @expected_value_a, @value_b)";
+                    + " VALUES(@samaccountname_a, @samaccountname_b, @field_a, @field_b, @value_a, @expected_value_a, @value_b);"
+                    + "SELECT SCOPE_IDENTITY()";
                 cmd.Parameters.AddWithValue("@samaccountname_a", samAccountName_a);
                 cmd.Parameters.AddWithValue("@samaccountname_b", samAccountName_b);
                 cmd.Parameters.AddWithValue("@field_a", field_a);
@@ -173,7 +173,7 @@ namespace WebApplication1.Models
                 cmd.Parameters.AddWithValue("@value_a", value_a);
                 cmd.Parameters.AddWithValue("@expected_value_a", expectedValue_a);
                 cmd.Parameters.AddWithValue("@value_b", value_b);
-                cmd.ExecuteNonQuery();
+                id = Convert.ToInt32(cmd.ExecuteScalar());
             }
             catch (Exception e)
             {
