@@ -9,7 +9,7 @@
     </tr>
     @foreach (var error in ViewBag.Errors)
     {
-        if (error.value_a == "")
+        if (error.expectedValue_a == "Not empty")
         {
             <tr>
                 <td>@error.samAccountName_a</td>
@@ -22,8 +22,8 @@
                 <td>@error.samAccountName_a</td>
                 <td>
                     Le champ "@error.field_a" ne correspond pas au champ "@error.field_b"<br />
-                    Valeur du champ "@error.field_a" : @error.value_a<br />
                     Valeur du champ "@error.field_b" : @error.value_b<br />
+                    Valeur du champ "@error.field_a" : @error.value_a<br />
                     Valeur attendue : @error.expectedValue_a
                 </td>
             </tr>

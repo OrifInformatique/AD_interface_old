@@ -9,6 +9,11 @@ namespace WebApplication1.Controllers
 {
     public class CheckController : Controller
     {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Displays a list of users that are not part of both the `SAIUSER` AD group and not in any of the GGDAC groups
         /// </summary>
@@ -109,6 +114,52 @@ namespace WebApplication1.Controllers
                 error.InsertOrUpdate();
             }
             ViewBag.Groups = groups;
+            return View();
+        }
+
+        public ActionResult UsersAddress()
+        {
+            string[] properties = new string[] { "streetAddress", "postalCode", "l", "st", "co" };
+            Dictionary<string, Dictionary<string, string>> listAddress = new Dictionary<string, Dictionary<string, string>>()
+            {
+                { "Orif Pomy", new Dictionary<string, string>() {
+                    { "streetAddress", "Ch. du Mont-de-Brez 2" },
+                    { "postalCode", "1405" },
+                    { "l", "Pomy" },
+                    { "st", "VD" },
+                    { "co", "Switzerland" }
+                } },
+                { "Orif Aigle", new Dictionary<string, string>() {
+                    { "streetAddress", "Chemin de Pré Yonnet" },
+                    { "postalCode", "1860" },
+                    { "l", "Aigle" },
+                    { "st", "VD" },
+                    { "co", "Switzerland" }
+                }}
+            };
+            List<ErrorModel> errors = new List<ErrorModel>();
+            DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+            adSearcher.Filter = "(&(company=*)(objectCategory=person))";
+            SearchResultCollection coll = adSearcher.FindAll();
+            foreach (SearchResult item in coll)
+            {
+                UserModel user = new UserModel(item.GetDirectoryEntry());
+                string company = user.PropertyToString("company");
+                if (listAddress.ContainsKey(company))
+                {
+                    Dictionary<string, string> expectedAdress = listAddress[company];
+                    foreach (string property in properties)
+                    {
+                        if (user.PropertyToString(property) != expectedAdress[property])
+                        {
+                            ErrorModel error = new ErrorModel(user.PropertyToString("samAccountName"), user.PropertyToString("samAccountName"), property, "company", user.PropertyToString(property), expectedAdress[property], company);
+                            errors.Add(error);
+                            error.InsertOrUpdate();
+                        }
+                    }
+                }
+            }
+            ViewBag.Errors = errors;
             return View();
         }
     }

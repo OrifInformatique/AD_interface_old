@@ -235,7 +235,6 @@
   <ItemGroup>
     <Content Include="Views\web.config" />
     <None Include="packages.config" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\BaseLayout.cshtml" />
     <Content Include="Views\Info\FindUser.cshtml" />
     <Content Include="Views\Info\DetailUser.cshtml" />
@@ -250,8 +249,9 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\User.cshtml" />
     <Content Include="Views\Check\DuplicatePhone.cshtml" />
-    <Content Include="Views\Check\GroupsDescription.cshtml" />
     <Content Include="Views\Errors\Dashboard.cshtml" />
+    <Content Include="Views\Check\UsersAddress.cshtml" />
+    <Content Include="Views\Check\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
