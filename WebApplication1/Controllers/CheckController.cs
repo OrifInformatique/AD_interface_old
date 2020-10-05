@@ -68,6 +68,7 @@ namespace WebApplication1.Controllers
             Dictionary<string, UserModel> phones = new Dictionary<string, UserModel>();
             SortedDictionary<string, List<UserModel>> users = new SortedDictionary<string, List<UserModel>>();
             DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+            adSearcher.PageSize = int.MaxValue;
             adSearcher.Filter = "(&(telephoneNumber=*))";
             SearchResultCollection coll = adSearcher.FindAll();
             foreach (SearchResult item in coll)
@@ -103,6 +104,7 @@ namespace WebApplication1.Controllers
             List<GroupModel> groups = new List<GroupModel>();
             List<ErrorModel> errors = new List<ErrorModel>();
             DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+            adSearcher.PageSize = int.MaxValue;
             adSearcher.Filter = "(&(!description=*)(objectCategory=group))";
             SearchResultCollection coll = adSearcher.FindAll();
             foreach (SearchResult item in coll)
@@ -139,6 +141,7 @@ namespace WebApplication1.Controllers
             };
             List<ErrorModel> errors = new List<ErrorModel>();
             DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+            adSearcher.PageSize = int.MaxValue;
             adSearcher.Filter = "(&(company=*)(objectCategory=person))";
             SearchResultCollection coll = adSearcher.FindAll();
             foreach (SearchResult item in coll)

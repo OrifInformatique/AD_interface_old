@@ -29,6 +29,7 @@ namespace WebApplication1.Controllers
             || (findBy == "names" && (!string.IsNullOrWhiteSpace(firstname) || !string.IsNullOrWhiteSpace(lastname))))
             {
                 DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+                adSearcher.PageSize = int.MaxValue;
                 if (findBy == "username")
                 {
                     adSearcher.Filter = "(&(samAccountName=" + username + ")(objectCategory=person))";
@@ -105,6 +106,7 @@ namespace WebApplication1.Controllers
             if (!string.IsNullOrWhiteSpace(group))
             {
                 DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+                adSearcher.PageSize = int.MaxValue;
                 adSearcher.Filter = "(&(samAccountName=" + group + ")(objectCategory=group))";
                 try
                 {
@@ -177,6 +179,7 @@ namespace WebApplication1.Controllers
             if (!string.IsNullOrWhiteSpace(samAccountName))
             {
                 DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+                adSearcher.PageSize = int.MaxValue;
                 adSearcher.Filter = "(&(samAccountName=" + samAccountName + ")(objectCategory=group))";
                 SearchResult result = adSearcher.FindOne();
                 if (result != null)
