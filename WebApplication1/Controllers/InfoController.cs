@@ -14,6 +14,14 @@ namespace WebApplication1.Controllers
             return Redirect("~/");
         }
 
+        /// <summary>
+        /// Looks up an user by either username (username) or names (first name and last name)
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="firstname"></param>
+        /// <param name="lastname"></param>
+        /// <param name="findBy"></param>
+        /// <returns></returns>
         public ActionResult FindUser(string username, string firstname, string lastname, string findBy = "username")
         {
             List<UserModel> users = new List<UserModel>();
@@ -21,6 +29,7 @@ namespace WebApplication1.Controllers
             || (findBy == "names" && (!string.IsNullOrWhiteSpace(firstname) || !string.IsNullOrWhiteSpace(lastname))))
             {
                 DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+                adSearcher.PageSize = int.MaxValue;
                 if (findBy == "username")
                 {
                     adSearcher.Filter = "(&(samAccountName=" + username + ")(objectCategory=person))";
@@ -48,7 +57,6 @@ namespace WebApplication1.Controllers
                 }
                 catch (System.ArgumentException)
                 {
-
                 }
             }
             if (findBy != "username" && findBy != "names")
@@ -60,6 +68,11 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Displays the details of an user by their samaccountname
+        /// </summary>
+        /// <param name="id">The samaccountname of the user</param>
+        /// <returns></returns>
         public ActionResult DetailUser(string id)
         {
             if (!string.IsNullOrEmpty(id))
@@ -77,18 +90,23 @@ namespace WebApplication1.Controllers
                 }
                 catch (System.ArgumentException)
                 {
-
                 }
             }
             return RedirectToAction("FindUser");
         }
 
+        /// <summary>
+        /// Displays the possible groups for a groupname searched
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
         public ActionResult FindGroup(string group)
         {
             List<GroupModel> groups = new List<GroupModel>();
             if (!string.IsNullOrWhiteSpace(group))
             {
                 DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+                adSearcher.PageSize = int.MaxValue;
                 adSearcher.Filter = "(&(samAccountName=" + group + ")(objectCategory=group))";
                 try
                 {
@@ -100,13 +118,18 @@ namespace WebApplication1.Controllers
                 }
                 catch (System.ArgumentException)
                 {
-
                 }
             }
             ViewBag.Groups = groups;
             return View();
         }
 
+        /// <summary>
+        /// Displays the list of users in a group
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="id2">"1" if the sub groups are to display too, "0" otherwise</param>
+        /// <returns></returns>
         public ActionResult DetailGroup(string id, string id2 = "0")
         {
             if (!string.IsNullOrEmpty(id))
@@ -116,7 +139,7 @@ namespace WebApplication1.Controllers
                 {
                     List<UserModel> users = new List<UserModel>();
                     List<GroupModel> groups = new List<GroupModel>();
-                    
+
                     var members = group.GetMembers(id2 != "0");
                     foreach (var member in members)
                     {
@@ -145,12 +168,18 @@ namespace WebApplication1.Controllers
             return RedirectToAction("FindGroup");
         }
 
+        /// <summary>
+        /// Displays subgroups and is called by ajax js
+        /// </summary>
+        /// <param name="samAccountName"></param>
+        /// <returns></returns>
         public ActionResult AjaxSubGroups(string samAccountName)
         {
             List<GroupModel> groups = new List<GroupModel>();
             if (!string.IsNullOrWhiteSpace(samAccountName))
             {
                 DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+                adSearcher.PageSize = int.MaxValue;
                 adSearcher.Filter = "(&(samAccountName=" + samAccountName + ")(objectCategory=group))";
                 SearchResult result = adSearcher.FindOne();
                 if (result != null)
